@@ -27,6 +27,11 @@ Zarckary is a Python-based game that combines resource management, combat mechan
   ```bash
   python zarckary.py
   ```
+  If python zarckary.py does not work try:
+  ```bash
+  python3 zarckary.py
+  ````
+
 - **Drinking Water**: The `drink` functionality allows you to consume water bottles. Each bottle has a fixed value and fullness percentage.
 - **Combat**: Use the `FIGHT` function to engage in battles. Ensure you have sufficient resources before entering combat.
 
