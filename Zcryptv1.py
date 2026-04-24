@@ -1,3 +1,5 @@
+# encryption and decryption functions for zarckary game, using a self-generated key stored in zkey.json
+
 import json
 import base64
 import random
