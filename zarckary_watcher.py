@@ -1,3 +1,11 @@
+# Two way anti-cheat system for zarckary game. 
+# The watcher process monitors the game process and resets the player's account if the game process is not updating its tick file. 
+# The game process updates its tick file every second and checks if the watcher process is alive. 
+# If the watcher process is not alive, the game process will exit. 
+# This way, if the player tries to cheat by pausing the game or killing the watcher process, their account will be reset. 
+# The player can restore their account using a save key that is generated when their account is reset. 
+# The save key is stored in the player's data and can be used to restore their account if they contact the creator of the game.
+
 import os
 import json
 import time
