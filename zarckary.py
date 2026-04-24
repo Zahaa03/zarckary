@@ -1,3 +1,5 @@
+# main game file
+
 print("hello world")
 
 import json
