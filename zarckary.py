@@ -19,6 +19,7 @@ global lastxy
 global trespass
 global data
 global LETTER
+global attrdict
 
 
 TYPE_SPEED = 0.02
@@ -57,8 +58,11 @@ COMMANDS = {
     "inventory": ["inventory", "stuff i own", "INVENTORY","i","I","stuff"],
     "weapons":["weapons","my weapons","WEAPONS","attackers","killers","killer things"],
     "food":   ["food","my food","FOOD","eaters","eating things"],
-    "water":  ["water","my water","WATER","drinkers","drinking things","bottles","bottle","drinks","drink"],
+    "water":  ["water","my water","WATER","drinkers","drinking things","bottles","bottle"],
+    "eat":    ["eat","eat the","devour","devour the","munch","munch the"],
+    "drink":  ["drink","drink the","gulp","gulp the","quench","quench the"],
     "stats":  ["stats","STATS","status","player stats","st","s"],
+    "deaths": ["death","deaths","my deaths","my death","deth","dath","deths","d"],
     "move":   ["move","move the","move te","move it"],
     "enter":  ["enter","go into","enter the","go into the","enter into","go into the"],
     "climb":  ["climb","clim","climb the","climb up","climb up the"],
@@ -89,10 +93,10 @@ TARGETS = {
     "dit"+"ch":["into dit"+"ch","dit"+"ch","the dit"+"ch","into the dit"+"ch","in dit"+"ch","in the dit"+"ch"],
     "rocks":["rocks","the rocks","rock","the rock"],
     "letter":["letter","the letter","note","the note","welcome letter","the welcome letter","welcome to zarckary letter","the welcome to zarckary letter","welcome to zarckary","zarkary","the welcome to zarckary","zarckary letter","the zarckary letter"],
-    "starter food pack":["starter food pack","the starter food pack","starter pack","the starter pack","starter food","the starter food","pack","the pack","pack of food","the pack of food","pack of starter food","the pack of starter food","food","the food"],
+    "starter_food":["starter food pack","the starter food pack","starter pack","the starter pack","starter food","the starter food","pack","the pack","pack of food","the pack of food","pack of starter food","the pack of starter food","food","the food"],
+    "water_bottle": ["water bottle","the water bottle","bottle","the bottle","water","the water"],
     "into_mine": ["mine","mines","the mine"],
     "tree":["tall tree","tree","tre","big tree"],
-    "starter_food":["starter food pack","the starter food pack","starter pack","the starter pack","starter food","the starter food"],
     "barn":["barn","the barn","the small barn","small barn","little barn","the little barn"],
     "barn_door":["barn door","the barn door"]
 }
@@ -124,8 +128,8 @@ game_board = {
 
 
 items = {"weapons_and_items":{"stars":{"owned":0,"damage":20,"chance":0.6545},"za'roc":{"owned":0,"damage":30},"axe":{"owned":0},"shovel":{"owned":0},"pickaxe_bad":{"owned":0},"pickaxe_good":{"owned":0},"pickaxe_perfect":{"owned":0},"rope":{"owned":0},"matches":{"owned":0},"lamp":{"owned":0,"on":False},"kerosene":{"owned":0},"mine_map":{"owned":0,"started":False},"letter": {"owned": 0},"stick":{"owned":0}},
-         "food":{"starter_food":{"owned":0},"bread":{"owned":0},"apple":{"owned":0}},
-         "water":{"0.5l_full_bottle":{"owned":0},"1l_full_bottle":{"owned":0},"2l_full_bottle":{"owned":0},"5l_full_bottle":{"owned":0},"0.5l_empty_bottle":{"owned":0},"1l_empty_bottle":{"owned":0},"2l_empty_bottle":{"owned":0},"5l_empty_bottle":{"owned":0}}
+         "food":{"starter_food":{"owned":0},"bread":{"owned":0,"value":40},"apple":{"owned":0,"value":65}},
+         "water":{"0.5l_full_bottle":{"owned":0,"value":50,"%":100},"1l_full_bottle":{"owned":0,"value":100,"%":100},"2l_full_bottle":{"owned":0,"value":200,"%":100},"5l_full_bottle":{"owned":0,"value":500,"%":100},"0.5l_empty_bottle":{"owned":0},"1l_empty_bottle":{"owned":0},"2l_empty_bottle":{"owned":0},"5l_empty_bottle":{"owned":0}}
          }
 
 base_items = items
@@ -396,6 +400,7 @@ def RUN(times, speed):
     return True
 
 def FIGHT(enemy):
+    xy = f"{x},{y}"
     your_turn = True
     infight = True
     alive = True
@@ -427,6 +432,7 @@ def FIGHT(enemy):
                 printz(f"You died while trying to run away from the "+name+".")
                 wait(4)
                 printz(f"Game over.")
+                attrdict["death"][xy] = f"You died by {name} while running away from it."
                 Game_over()
 
         # staying and fighting
@@ -567,6 +573,7 @@ def FIGHT(enemy):
                 printz(f"You were defeated by the "+name+".")
                 wait(4)
                 printz(f"Game over.")
+                attrdict["death"][xy] = f"You died while fighting {name}."
                 Game_over()
             elif alive == True and run == True:
                 printz(f"You successfully ran away from the "+name+"!")
@@ -577,6 +584,7 @@ def FIGHT(enemy):
                 printz(f"You died while trying to run away from the "+name+".")
                 wait(4)
                 printz(f"Game over.")
+                attrdict["death"][xy] = f"You died by {name} while running away from it."
                 Game_over()
         else:
             print("Invalid input:",y_n+". Type 'y' or 'n'.")
@@ -605,6 +613,7 @@ def weapon_action(weapon,player_stats):
         return 0, 0
 
 def angry_farmer(crop,data,username,x,y):
+    xy = f"{x},{y}"
     printz(f"Oh, no. A farmer saw you bushwhacking his "+crop+" and does not like it!")
     wait(3)
     printz(f"The farmer points a pitchfork at you and yells 'GET AWAY FROM MY "+crop.upper()+"!!!!'.")
@@ -634,6 +643,7 @@ def angry_farmer(crop,data,username,x,y):
         printz(f"Your user has been deleted.")
         wait(4)
         printz(f"Better luck (and skills) next time.")
+        attrdict["death"][xy] = "You died by a pitchfork to the head"
         Game_over()
 
     printz(f"You made it past all the obstacles and escaped the farmer! Congratulations!")
@@ -749,6 +759,7 @@ def Turns(turns,x,y,data,username):
         None
 
 def SWIM(data,username):
+        xy = f"{x},{y}"
         i = 15
         speed = 1.25
         printz(f"A huge wave crashes over you.")
@@ -790,6 +801,7 @@ def SWIM(data,username):
             printz(f"You drowned!")
             printz(f"User "+username+" has been deleted.")
             printz(f"Better luck next time! :)")
+            attrdict["death"][xy] = "You drowned"
             Game_over()
         elif survived == True:
             printz(f"You survived!")
@@ -830,6 +842,7 @@ def json_load():
             return {}
 
 def check_operations(command,target,user_input,raw_input,x,y,turns,username,data,enter):
+        xy = f"{x},{y}"
         flag = None
 
         # Reload reseated data
@@ -999,15 +1012,128 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
             flag = "open"
             if target in TARGETS["starter_food"]:
                 if items["food"]["starter_food"]["owned"] == 1:
-                    printz(f"You opened starter food pack and found a bottle of water, bread and 5 throwing stars. You put the water, bread and throwing stars in your inventory.")
-                    items["water"]["1l_full_bottle"]["owned"] += 1
-                    items["food"]["bread"]["owned"] += 1
+                    printz(f"You opened starter food pack and found bottles of water, bread and 5 throwing stars. You put the water, bread and throwing stars in your inventory.")
+                    items["water"]["0.5l_full_bottle"]["owned"] += 3
+                    items["food"]["bread"]["owned"] += 3
                     items["weapons_and_items"]["stars"]["owned"] += 5
                     items["food"]["starter_food"]["owned"] = 0
                 else:
                     printz(f"You dont have a starter food pack!")
             else:
                 printz(f"You cant open a "+target+"!")
+        
+        # eating
+        elif command in COMMANDS["eat"]:
+            flag = "eat"
+            if target.lower().strip() in items["food"]:
+                if items["food"][target]["owned"] > 0:
+                    hunger = player_stats["hunger"]
+                    if items["food"][target]["value"] > 100 - hunger:
+                        printz(f"Are you sure you want to eat {target}? You will waste food as it has {items["food"][target]["value"] - (100 - hunger)} hunger points more then the hunger you have.")
+                        wait(2)
+                        while True:
+                            y_n = inputz("(y/n) >  ")
+                            if y_n in COMMANDS["yes"]:
+                                break
+                            elif y_n in COMMANDS["no"]:
+                                printz(f"You decided to not eat {target}.")
+                                return x,y,flag,turns,data,enter
+                            else:
+                                printz(f"Invalid input: '{y_n}'. Type 'y' or 'n'.")
+                    printz(f"You ate the {target} and increased your hunger by {items["food"][target]["value"]} points!")
+                    player_stats["hunger"] += items["food"][target]["value"]
+                    items["food"][target]["owned"] -= 1
+                else:
+                    printz(f"You dont have any {target} to eat!")
+            else:
+                printz(f"You cant eat a "+target+"!")
+
+        # drinking
+        elif command in COMMANDS["drink"]:
+            flag = "drink"
+            if target in TARGETS["water_bottle"]:
+                drinkable = []
+                for bottle_name in items["water"]:
+                    bottle_data = items["water"][bottle_name]
+                    if bottle_name.endswith("_full_bottle") and bottle_data.get("owned", 0) > 0 and "value" in bottle_data and "%" in bottle_data:
+                        drinkable.append(bottle_name)
+
+                if len(drinkable) == 0:
+                    printz(f"You dont have any water bottles to drink from!")
+                elif player_stats["thirst"] >= 100:
+                    printz(f"You are not thirsty right now.")
+                else:
+                    printz("Choose a water bottle to drink from:")
+                    for i, bottle_name in enumerate(drinkable, start=1):
+                        bottle_data = items["water"][bottle_name]
+                        total_ml = bottle_data["value"] * 10
+                        current_ml = int((total_ml * bottle_data["%"])/100)
+                        printz(f"{i}. {bottle_name} - {bottle_data['owned']} owned, {bottle_data['%']}% full ({current_ml}/{total_ml} ml).")
+
+                    while True:
+                        choice = inputz("Drink from which bottle? (number)>  ").strip()
+                        try:
+                            choice = int(choice)
+                            if choice < 1 or choice > len(drinkable):
+                                printz(f"Invalid choice. Pick a number between 1 and {len(drinkable)}.")
+                                continue
+                            break
+                        except ValueError:
+                            printz(f"Invalid input: '{choice}'. Enter a number.")
+
+                    selected_key = drinkable[choice - 1]
+                    selected = items["water"][selected_key]
+
+                    if selected["%"] <= 0 and selected["owned"] > 0:
+                        selected["%"] = 100
+
+                    # `value` is bottle capacity. Remaining water is directly proportional to `%`.
+                    # Calculate drink gain from current percent, then recalculate `%` from what remains.
+                    current_amount = (selected["value"] * selected["%"]) / 100
+                    available_thirst = current_amount
+                    missing_thirst = 100 - player_stats["thirst"]
+                    gained_thirst = min(available_thirst, missing_thirst)
+
+                    if gained_thirst <= 0:
+                        printz(f"That bottle is empty.")
+                    else:
+                        remaining_amount = current_amount - gained_thirst
+                        new_percent = (remaining_amount / selected["value"]) * 100
+                        if new_percent < 0:
+                            new_percent = 0
+                        elif new_percent > 100:
+                            new_percent = 100
+
+                        player_stats["thirst"] += gained_thirst
+                        if player_stats["thirst"] > 100:
+                            player_stats["thirst"] = 100
+
+                        if int(player_stats["thirst"]) == player_stats["thirst"]:
+                            player_stats["thirst"] = int(player_stats["thirst"])
+
+                        if int(gained_thirst) == gained_thirst:
+                            gained_text = int(gained_thirst)
+                        else:
+                            gained_text = round(gained_thirst, 2)
+
+                        printz(f"You drank from {selected_key} and gained {gained_text} thirst.")
+                        selected["%"] = round(new_percent, 2)
+
+                        # If one bottle in the stack is emptied, move it to empty bottles,
+                        # and if there are more full bottles in that stack, reset `%` to 100.
+                        if selected["%"] <= 0:
+                            selected["owned"] -= 1
+                            bottle_size = selected_key.split("_")[0]
+                            empty_key = f"{bottle_size}_empty_bottle"
+                            if empty_key in items["water"]:
+                                items["water"][empty_key]["owned"] += 1
+                            if selected["owned"] > 0:
+                                selected["%"] = 100
+                            else:
+                                selected["%"] = 0
+                            printz(f"Your {selected_key} is now empty. It has been moved to {empty_key}.")
+            else:
+                printz(f"You cant drink a {target}!")
 
         # Search (area)
         elif command in COMMANDS["search"]:
@@ -1115,6 +1241,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                         printz(f"You lost 20 hp from the fall and have {player_stats['health']} hp left!")
                         if player_stats["health"] <= 0:
                             printz(f"You died from the fall!")
+                            attrdict["death"][xy] = "You died by falling down from a tree."
                             Game_over()
                         else:
                             printz(f"You can now continue your adventure.")
@@ -1329,8 +1456,17 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                 else:
                     printz(f+": "+str(player_stats[f]))
             attrdict["divide_time"] = datetime.now().isoformat()
-
-
+        
+        # DEATHS command
+        elif command in COMMANDS["deaths"]:
+            printz("This is a list of all the ways you have died.")
+            print(" ")
+            printz("You have:")
+            for xy in attrdict["death"]:
+                print(" ")
+                printz(attrdict["death"][xy][4:])
+            if len(attrdict["death"]) == 0:
+                printz("You have not died yet!")
 
         # Admin
         elif command in COMMANDS["admin"]:
@@ -1472,7 +1608,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
 
             elif admin_input[0] == "fight":
                 c = cricket_storm()
-                FIGHT(c, player_stats, items)
+                FIGHT(c)
 
 
             else:
@@ -1590,31 +1726,31 @@ def print_position(x,y,flag,data,username):
         # enemy spawn?
         if position[0:6] == "Fields":
             if player_stats["xp"]["total"] > random.uniform(ENEMY_SPAWN_CHANCE["fields"][0],ENEMY_SPAWN_CHANCE["fields"][1]):
-                FIGHT(cricket_storm(),player_stats,items)
+                FIGHT(cricket_storm())
 
         elif position[0:6] == "Forest":
             if player_stats["xp"]["total"] > random.uniform(ENEMY_SPAWN_CHANCE["forest"][0],ENEMY_SPAWN_CHANCE["forest"][1]):
-                FIGHT(goblin(),player_stats,items)
+                FIGHT(goblin())
         
         elif position[0:5] == "Dense":
             if player_stats["xp"]["total"] > random.uniform(ENEMY_SPAWN_CHANCE["dense_forest"][0],ENEMY_SPAWN_CHANCE["dense_forest"][1]):
-                FIGHT(forest_troll(),player_stats,items)
+                FIGHT(forest_troll())
 
         elif position[0:6] == "Valley" or position[0:8] == "Mountain":
             if player_stats["xp"]["total"] > random.uniform(ENEMY_SPAWN_CHANCE["valley_and_hills"][0],ENEMY_SPAWN_CHANCE["valley_and_hills"][1]):
-                FIGHT(yeti(),player_stats,items)
+                FIGHT(yeti())
         
         elif position[0:5] == "Rocky":
             if player_stats["xp"]["total"] > random.uniform(ENEMY_SPAWN_CHANCE["rocky_area"][0],ENEMY_SPAWN_CHANCE["rocky_area"][1]):
-                FIGHT(giant_snake(),player_stats,items)
+                FIGHT(giant_snake())
         
         elif position[0:6] == "Plains":
             if player_stats["xp"]["total"] > random.uniform(ENEMY_SPAWN_CHANCE["plains"][0],ENEMY_SPAWN_CHANCE["plains"][1]):
-                FIGHT(dragon_boss(),player_stats,items)
+                FIGHT(dragon_boss())
         
         elif position[0:4] == "Road":
             if player_stats["xp"]["total"] > random.uniform(ENEMY_SPAWN_CHANCE["road"][0],ENEMY_SPAWN_CHANCE["road"][1]):
-                FIGHT(giant_spider(),player_stats,items)
+                FIGHT(giant_spider())
         
         if "cant_move" in attrdict["attr"]:
             printz(f"You are unable to move because of hunger.")
@@ -1644,16 +1780,17 @@ def print_position(x,y,flag,data,username):
             i = random.randint(5,15)
             Countdown(i)
 
-        elif position[14:26] == "bushwhacking":
-            if position[35:37] == "Co":
+        elif position[13:25] == "bushwhacking":
+            crop = "crop"
+            if position[34:36] == "Co":
                 crop = "corn"
-            elif position[35:37] == "Ca":
+            elif position[34:36] == "Ca":
                 crop = "canola"
-            elif position[35:37] == "Wh":
+            elif position[34:36] == "Wh":
                 crop = "wheat"
-            elif position[35:37] == "Ba":
+            elif position[34:36] == "Ba":
                 crop = "barley"
-            elif position[35:37] == "Ri":
+            elif position[34:36] == "Ri":
                 crop = "rice"
             trespass += 1
             i = random.randint(2,6)
@@ -1668,80 +1805,109 @@ def print_position(x,y,flag,data,username):
                     wait(2)
                     printz(f"You are at the base of the trail that leads to the top of the mountain.")
                     wait(2)
+                    print(" ")
                     printz(f"Do you want to climb mount Zarckmore?")
                     climb = inputz("Climbing mountains is a tedious dangerous thing in this game! (y/n) >  ")
                     if climb in COMMANDS["yes"]:
+                        print(" ")
                         printz(f"You decided to climb the mountain.")
                         wait(2)
+                        print(" ")
                         printz(f"You started hiking.")
                         Countdown(10)
                         printz(f"You cant see where the path goes anymore because it very worn down.")
+                        print(" ")
                         wait(2)
                         while True:
                             climb = inputz("left or right? > ")
                             if climb in COMMANDS["left"]:
                                 printz(f"You decided to walk left.")
+                                print(" ")
                                 wait(2)
                                 printz(f"The path leads you through a thick mist.")
                                 Countdown(10)
+                                print(" ")
                                 printz(f"You still cant see anything from the mist.")
                                 wait(2)
+                                print(" ")
                                 printz(f"Oh, no. You did not see the ledge in the mist and fell down 10 meters.")
                                 wait(2)
                                 printz(f"You are unable to move your legs, but wait for the mist to go away.")
                                 Countdown(15)
+                                print(" ")
                                 printz(f"You died from infection in your legs.")
                                 printz(f"Dont fall off the ledge next time!")
+                                attrdict["death"][xy] = "You died from infection in your legs."
                                 Game_over()
                             elif climb in COMMANDS["right"]:
                                 printz(f"You decided to go right.")
                                 Countdown(10)
+                                print(" ")
                                 printz(f"It has started raining!")
                                 Countdown(5)
+                                print(" ")
                                 printz(f"The rain has made it impossible to see anything.")
                                 wait(2)
+                                print(" ")
                                 printz(f"You cant see where the trail goes!")
+                                print(" ")
                                 while True:
                                     climb = inputz("left or right? >  ")
                                     if climb in COMMANDS["left"]:
                                         printz(f"You decided to go left.")
+                                        print(" ")
                                         Countdown(10)
                                         printz(f"The rain has just gotten heavier! You are drenched")
                                         wait(3)
+                                        print(" ")
                                         printz(f"Large streams are flowing down the mountain.")
                                         wait(2)
+                                        print(" ")
                                         printz(f"Oh, no. The water has loosened some rocks over you!")
                                         wait(2)
+                                        print(" ")
                                         printz(f"They come down in a large rockslide!")
                                         wait(2)
+                                        print(" ")
                                         printz(f"You get caught in the rocks and get buried!")
                                         wait(2)
+                                        print(" ")
                                         printz(f"You died by rockslide!")
+                                        print(" ")
+                                        attrdict["death"][xy] = "You died by a rockslide, but hey you got a burial to be proud of!"
                                         Game_over()
                                     elif climb in COMMANDS["right"]:
                                         printz(f"You decided to go right.")
+                                        print(" ")
                                         Countdown(10)
                                         printz(f"The rain has stopped!")
                                         wait(2)
+                                        print(" ")
                                         printz(f"The mist has cleared up!")
                                         wait(2)
                                         printz(f"You see the top of the mountain!")
                                         wait(2)
+                                        print(" ")
                                         printz(f"You made it to the top of the mountain and can see the whole area around you!")
                                         wait(3)
+                                        print(" ")
                                         printz(f"You also find a skeleton of a hiker who did not make it to the top. You search through his belongings and find a kerosene lamp.")
                                         items["weapons_and_items"]["lamp"]["owned"] = 1
                                         wait(3)
+                                        print(" ")
                                         printz(f"You can now use the lamp to see in dark places.")
                                         wait(3)
                                         printz(f"You climb back down the mountain.")
                                         Countdown(30)
+                                        print(" ")
                                         printz(f"You climbed down the mountain.")
                                     else:
                                         printz(f"Thats not a valid command.")
+                                        print(" ")
                                         continue
                             else:
                                 printz(f"Thats not a valid command.")
+                                print(" ")
                                 continue
 
                     elif climb in COMMANDS["no"]:
@@ -1752,6 +1918,9 @@ def print_position(x,y,flag,data,username):
                     else:
                         printz(f"Thats not a valid command.")
                         continue
+            if xy in attrdict["death"]:
+                printz(f"Here {attrdict["death"][xy].lower()}")
+                print(" ")
 
             if position[0:5] not in attrdict["attr"]:
                 attrdict["attr"].append(position[0:5])
@@ -1907,6 +2076,7 @@ def Tick_update():
         time.sleep(1)
 
 def Update():
+    xy = f"{x},{y}"
     ## XP ##
 
     # time xp
@@ -1937,6 +2107,7 @@ def Update():
 
     if player_stats["hunger"] <= 0:
         printz("You died of hunger!")
+        attrdict["death"][xy] = "You died of hunger."
         Game_over()
     elif player_stats["hunger"] <= 10:
         printz("You are extremely hungry and can not move!")
@@ -1990,6 +2161,7 @@ def Update():
     # Check thirst
     if player_stats["thirst"] <= 0:
         printz("You died of dehydration!")
+        attrdict["death"][xy] = "You died of dehydration"
         Game_over()
     elif player_stats["thirst"] <= 15:
         printz("You are so dehydrated you lost your sight!")
@@ -2028,6 +2200,12 @@ def Update():
         
     if player_stats["health"] > 100:
         player_stats["health"] = 100
+
+    if player_stats["hunger"] > 100:
+        player_stats["hunger"] = 100
+    
+    if player_stats["thirst"] > 100:
+        player_stats["thirst"] = 100
     
 
 print(COLORS["prompt"])
