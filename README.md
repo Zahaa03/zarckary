@@ -14,11 +14,12 @@ Zarckary is a Python-based game that combines resource management, combat mechan
 - **zarckary_watcher.py**: Monitors game state.
 - **zark.json**: Encrypted save file.
 - **Zcryptv1.py**: Handles save file encryption/decryption.
+- **gtick/wtick.json**: dumped game state.
 
 ## How to Play
 1. **Setup**: Ensure Python 3.x is installed on your system.
 2. **Run the Game**: Execute `zarckary.py` to start the game.
-3. **Manage Resources**: Use the `drink` functionality to manage water bottles effectively.
+3. **Manage Resources**: Use the `drink` and `eat` functionality to manage water bottles and food effectively.
 4. **Engage in Combat**: Use the `FIGHT` function to battle enemies.
 5. **Save Progress**: The game automatically saves progress in an encrypted file.
 
@@ -37,9 +38,9 @@ Zarckary is a Python-based game that combines resource management, combat mechan
 - **Combat**: Use the `FIGHT` function to engage in battles. Ensure you have sufficient resources before entering combat.
 
 ## Debugging and Development
-- **Testing**: Use `zarckary_watcher.py` to monitor the game state during development.
+- **Testing**: `zarckary_watcher.py` monitors the game state during development and dumps it in `gtick.json` and `wtick.json`.
 - **Encryption**: Modify `Zcryptv1.py` for custom encryption settings.
-- **Save Files**: The `zark.json` file stores encrypted game progress.
+- **Save Files**: The `zark.json` file stores encrypted game progress (if JSON_ENCODED = True).
 
 ## Requirements
 - Python 3.x
