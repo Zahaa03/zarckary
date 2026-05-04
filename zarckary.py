@@ -45,6 +45,7 @@ COLORS = {
 }
 
 COMMANDS = {
+    "fill":   ["fill","fill the","fil","fil the",""],
     "exit":   ["q","e","exit","terminate","quit","end","save and exit","save and quit","save and end","save and terminate","end game","exit game","quit game","terminate game"],
     "go":     ["go","walk","travel","head"],
     "take":   ["pick up the","take the","get the","grab the","pick the","pickup","pick up","take","get","grab","pick"],
@@ -73,7 +74,8 @@ COMMANDS = {
     "adminmode": ["adminmode","toggle admin","toggle admin mode","admin mode","change admin mode","toggle adminm","toggle adminm mode","adminm mode","change adminm mode","toggle a","toggle adminm","a mode","at"],
     "on":     ["on","enable","turn on","start"],
     "off":    ["off","disable","turn off","stop","end","terminate","of"],
-    "inspect":["inspect","inspect the","look at","look closer at","examine","examine the"],
+    "inspect":["inspect","inspect the","look at","look closer at","examine","examine the","check","check the"],
+    ""
     "mine":   {"COMMANDS":{
                    "mine":["mine the","whack the","mine","whack","hit the","hit"]},
                 "TARGETS":{        
@@ -100,7 +102,8 @@ TARGETS = {
     "into_mine": ["mine","mines","the mine"],
     "tree":["tall tree","tree","tre","big tree"],
     "barn":["barn","the barn","the small barn","small barn","little barn","the little barn"],
-    "barn_door":["barn door","the barn door"]
+    "barn_door":["barn door","the barn door"],
+    "area":["area","the area","surroundings","my surroundings","road","the road","forest","the forest","dense forest","the dense forest","plains","the plains","fields","the fields","barley","the barley","rice","the rice","corn","the corn","wheat","the wheat","field trail","the field trail","mountain","mountains","the mountains","the mountain","valley","the valley"],
 }
 
 trespass = 0
@@ -130,7 +133,7 @@ game_board = {
 
 
 items = {"weapons_and_items":{"stars":{"owned":0,"damage":20,"chance":0.6545},"za'roc":{"owned":0,"damage":30},"axe":{"owned":0},"shovel":{"owned":0},"pickaxe_bad":{"owned":0},"pickaxe_good":{"owned":0},"pickaxe_perfect":{"owned":0},"rope":{"owned":0},"matches":{"owned":0},"lamp":{"owned":0,"on":False},"kerosene":{"owned":0},"mine_map":{"owned":0,"started":False},"letter": {"owned": 0},"stick":{"owned":0}},
-         "food":{"starter_food":{"owned":0},"bread":{"owned":0,"value":40},"apple":{"owned":0,"value":65}},
+         "food":{"starter_food":{"owned":0},"bread":{"owned":0,"value":40},"apple":{"owned":0,"value":65},"snail_pieces":{"owned":0,"value":"10"}},
          "water":{"0.5l_full_bottle":{"owned":0,"value":50,"%":100},"1l_full_bottle":{"owned":0,"value":100,"%":100},"2l_full_bottle":{"owned":0,"value":200,"%":100},"5l_full_bottle":{"owned":0,"value":500,"%":100},"0.5l_empty_bottle":{"owned":0},"1l_empty_bottle":{"owned":0},"2l_empty_bottle":{"owned":0},"5l_empty_bottle":{"owned":0}}
          }
 
@@ -138,7 +141,7 @@ base_items = items
 x = 0
 y = 0
 data = {}
-attrdict = {"death":{},"barn":False,"attr":[], "searched_ditch":{"-5,-9":False,"-4,-9":False,"-4,-8":False,"-3,-8":False,"-3,-7":False,"-2,-7":False,"-2,-6":False,"-1,-6":False,"-1,-5":False,"-1,-4":False,"0,-3":False,"0,-2":False,"0,-1":False,"0,0":False,"0,1":False,"0,2":False,"0,3":False,"0,4":False,"1,4":False,"1,5":False,"1,6":False,"2,6":False,"2,7":False,"2,9":False}}
+attrdict = {"death":{},"barn":False,"attr":[], "searched_ditch":{"-5,-9":False,"-4,-9":False,"-4,-8":False,"-3,-8":False,"-3,-7":False,"-2,-7":False,"-2,-6":False,"-1,-6":False,"-1,-5":False,"-1,-4":False,"0,-3":False,"0,-2":False,"0,-1":False,"0,0":False,"0,1":False,"0,2":False,"0,3":False,"0,4":False,"1,4":False,"1,5":False,"1,6":False,"2,6":False,"2,7":False,"2,9":False},"searched":[],"water_sources":[]}
 achieved = []
 turns = -1
 player_stats = {"health":100,"hunger":100,"thirst":100,"attack":15,"strength":15,"defense":10,"start_time":0,"play_time":0,"xp":{"total":0}}
@@ -312,10 +315,21 @@ def Search_ditch():
     else:
         printz(f"You searched the dit"+"ch but found nothing.")
 
+def Search():
+    chance = random.randint(0,100)
+    if chance <= 10:
+        amount = random.randint(1,4)
+        printz(f"you found {amount} snail pieces in your surrounding area! They each are worth 10 hunger points, but might give you food poisoning!")
+        items["food"]["snail_pieces"]["owned"] += amount
+    elif chance >= 90:
+        printz("You found a 500 ml bottle of dirty water! It is worth 50 thirst points, but might poison you!")
+    else:
+        printz("You did not find anything in your surrounding area.")
+
 def bold(text):
     return f"\033[1m{text}\033[22m"
 
-def printz(text):
+def printz(text,sameline=False):
     cut = False
     if "no_printz" not in attrdict["attr"]:
         i = 0
@@ -337,7 +351,10 @@ def printz(text):
         print(text)
     else:
         print(f"Error line {line()}: Invalid state for printz function. Check attrdict['attr'] for invalid states.")
-    print(" ")
+    if sameline == True:
+        print("\r", end="", flush=True)
+    else:
+        print(" ")
 
 def Countdown(seconds):
     if "countdown" not in attrdict["attr"]:
@@ -843,6 +860,46 @@ def json_load():
         except Exception:
             return {}
 
+def fill():
+    for f in items["water"]:
+        type = None
+        bottle = items["water"][f]
+        if bottle["owned"] > 0:
+            try:
+                if bottle["%"] == 0:
+                    pass
+            except KeyError:
+                if f[0:1] == "0":
+                    type = "0.5l_full_bottle"
+                elif f[0:1] == "1":
+                    type = "1l_full_bottle"
+                elif f[0:1] == "2":
+                    type = "2l_full_bottle"
+                elif f[0:1] == "5":
+                    type = "5l_full_bottle"
+                
+                if type == None:
+                    printz(f"Error on line {line()}: water bottle failed to be recognized.")
+                    os._exit(0)
+                
+                printz(f"opening bottle.",sameline=True)
+                wait(5)
+                print("                              ")
+                printz(f"Leaning down.",sameline=True)
+                wait(5)
+                print("                              ")
+                printz(f"Filling up bottle.",sameline=True)
+                wait(5)
+                print("                              ")
+                Countdown(items["water"][type]["value"]//6)
+                printz(f"{type} filled up.")
+
+                items["water"][type]["owned"] += 1
+                items["water"][f]["owned"] -= 1
+                continue
+                
+
+
 def check_operations(command,target,user_input,raw_input,x,y,turns,username,data,enter):
         xy = f"{x},{y}"
         flag = None
@@ -883,7 +940,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                     wait(3)
                     printz(f"You already unlocked the 'admin' achievement! Who are you trying to trick?")
                     wait(3)
-                    printz(f"Zackary! You are trying to trick me! I know you already unlocked the 'admin' achievement! Stop trying to trick me!")
+                    printz(f"{username}! You are trying to trick me! I know you already unlocked the 'admin' achievement! Stop trying to trick me!")
                     wait(3)
                     printz(f"I hope you still enjoy the game, even if you dont like me. :)")
                     if username == "z":
@@ -895,9 +952,8 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
             else:
                 printz(f"Invalid input. I guess you dont like me, but thats ok. I hope you still enjoy the game! :)")
         
-        # barn
 
-        
+        # barn
         elif x == 6 and y == -1 and "inspected_barn_door" in attrdict["attr"]:
             if command in COMMANDS["go"]:
                 barn_target = target.split(" ")
@@ -1089,8 +1145,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                     if selected["%"] <= 0 and selected["owned"] > 0:
                         selected["%"] = 100
 
-                    # `value` is bottle capacity. Remaining water is directly proportional to `%`.
-                    # Calculate drink gain from current percent, then recalculate `%` from what remains.
+
                     current_amount = (selected["value"] * selected["%"]) / 100
                     available_thirst = current_amount
                     missing_thirst = 100 - player_stats["thirst"]
@@ -1121,8 +1176,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                         printz(f"You drank from {selected_key} and gained {gained_text} thirst.")
                         selected["%"] = round(new_percent, 2)
 
-                        # If one bottle in the stack is emptied, move it to empty bottles,
-                        # and if there are more full bottles in that stack, reset `%` to 100.
+
                         if selected["%"] <= 0:
                             selected["owned"] -= 1
                             bottle_size = selected_key.split("_")[0]
@@ -1136,17 +1190,60 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                             printz(f"Your {selected_key} is now empty. It has been moved to {empty_key}.")
             else:
                 printz(f"You cant drink a {target}!")
+        
+        # Fill upp water bottles
+        elif command in COMMANDS["fill"]:
+            flag = "fill"
+            if target in TARGETS["water_bottle"]:
+                i = False
+                for f in items["water"]:
+                    if items["water"][f]["owned"] > 0:
+                        try:
+                            if items["water"][f]["%"] == 0:
+                                pass
+                        except KeyError:
+                            i = True
+                if i == True:
+                    i = False
+                    if xy in attrdict["searched_ditch"]:
+                        printz("You are filling up your water bottles in a ditch!")
+                        wait(2)
+                        printz("This might poison you!")
+                        i = True
+                    elif xy in attrdict["water_sources"]:
+                        printz("You are filling upp your water bottles in clean fresh water!")
+                        wait(2)
+                        printz("This probably wont get poisoned")
+                        i = True
+                    if i == True:
+                        fill()
+                    else:
+                        printz("You cant fill upp your water bottles here, there is no freshwater!")
+                else:
+                    printz(f"You dont have any {target}'s to fill up!")
+            else:
+                printz(f"You cant fill up a {target}!")
+
 
         # Search (area)
         elif command in COMMANDS["search"]:
+            flag = "search"
             if target in TARGETS["dit"+"ch"]:
                 if not attrdict["searched_ditch"].get(f"{x},{y}", False):
                     Search_ditch()
                     attrdict["searched_ditch"][f"{x},{y}"] = True
                 else:
                     printz(f"You already searched the dit"+"ch here. You do not find anything new.")
+            elif target in TARGETS["area"]:
+                if xy not in attrdict["searched"]:
+                    printz("You are searching your surrounding area.")
+                    Countdown(random.randint(5,15))
+                    Search()
+                    attrdict["searched"].append(xy)
+                else:
+                    printz("You already searched this area and did not find anything new.")
             else:
-                printz(f"You cant search a "+target+"!")
+                printz("You did not assign anything to search.")
         
         # move items
         elif command in COMMANDS["move"]:
@@ -1800,7 +1897,7 @@ def print_position(x,y,flag,data,username):
                 trespass = 0
                 x,y = angry_farmer(crop,data,username,x,y)
         
-        if "cant_see" not in attrdict["attr"]:
+        if "blind" not in attrdict["attr"]:
             if xy == "-4,6":
                 while True:
                     printz(f"You see a tall mountain in front of you. It is called mount Zarckmore.")
@@ -2113,48 +2210,66 @@ def Update():
         Game_over()
     elif player_stats["hunger"] <= 10:
         printz("You are extremely hungry and can not move!")
+        print(" ")
         attrdict["attr"].append("cant_move")
     elif player_stats["hunger"] <= 20:
         printz("You are very hungry and start to move slower because of it.")
+        print(" ")
         attrdict["attr"].append("move_slowly")
         try:
             attrdict["attr"].remove("cant_move")
-            printz("You are not hungry anymore and can now move again (but only slowly).")
+            printz("You are not extremely hungry anymore and can now move again (but only slowly).")
+            while True:
+                attrdict["attr"].remove("cant_move")
         except ValueError:
             pass
     elif player_stats["hunger"] <= 30:
         printz("You are very hungry.")
+        print(" ")
         try:
             attrdict["attr"].remove("cant_move")
-            printz("You are not hungry anymore and can now move again.")
+            printz("You are not extremely hungry anymore and can now move again.")
+            while True:
+                attrdict["attr"].remove("cant_move")
         except ValueError:
             pass
         try:
             attrdict["attr"].remove("move_slowly")
             printz("You are not very hungry anymore and can now move at normal speed again.")
+            while True:
+                attrdict["attr"].remove("move_slowly")
         except ValueError:
             pass
     elif player_stats["hunger"] <= 50:
         printz("You are starting to get hungry.")
+        print(" ")
         try:
             attrdict["attr"].remove("cant_move")
-            printz("You are not hungry anymore and can now move again.")
+            printz("You are not extremely hungry anymore and can now move again.")
+            while True:
+                attrdict["attr"].remove("cant_move")
         except ValueError:
             pass
         try:
             attrdict["attr"].remove("move_slowly")
             printz("You are not very hungry anymore and can now move at normal speed again.")
+            while True:
+                attrdict["attr"].remove("move_slowly")
         except ValueError:
             pass
     else:
         try:
             attrdict["attr"].remove("cant_move")
-            printz("You are not hungry anymore and can now move again.")
+            printz("You are not extremely hungry anymore and can now move again.")
+            while True:
+                attrdict["attr"].remove("cant_move")
         except ValueError:
             pass
         try:
             attrdict["attr"].remove("move_slowly")
             printz("You are not very hungry anymore and can now move at normal speed again.")
+            while True:
+                attrdict["attr"].remove("move_slowly")
         except ValueError:
             pass
 
@@ -2166,33 +2281,41 @@ def Update():
         attrdict["death"][xy] = "You died of dehydration"
         Game_over()
     elif player_stats["thirst"] <= 15:
-        printz("You are so dehydrated you lost your sight!")
+        printz("You are so extreamly dehydrated you lost your sight!")
         attrdict["attr"].append("blind")
     elif player_stats["thirst"] <= 25:
         printz("You are very dehydrated and start to lose your sight because of it.")
         try:
             attrdict["attr"].remove("blind")
-            printz("You are not dehydrated anymore and can now see again.")
+            printz("You are not extreamly dehydrated anymore and can now see again.")
+            while True:
+                attrdict["attr"].remove("blind")
         except ValueError:
             pass
     elif player_stats["thirst"] <= 35:
         printz("You are very dehydrated. Make sure to drink water soon!")
         try:
             attrdict["attr"].remove("blind")
-            printz("You are not dehydrated anymore and can now see again.")
+            printz("You are not extreamly dehydrated anymore and can now see again.")
+            while True:
+                attrdict["attr"].remove("blind")
         except ValueError:
             pass
     elif player_stats["thirst"] <= 50:
         printz("You are starting to get dehydrated. Make sure to drink water soon!")
         try:
             attrdict["attr"].remove("blind")
-            printz("You are not dehydrated anymore and can now see again.")
+            printz("You are not extreamly dehydrated anymore and can now see again.")
+            while True:
+                attrdict["attr"].remove("blind")
         except ValueError:
             pass
     else:
         try:
             attrdict["attr"].remove("blind")
-            printz("You are not dehydrated anymore and can now see again.")
+            printz("You are not extreamly dehydrated anymore and can now see again.")
+            while True:
+                attrdict["attr"].remove("blind")
         except ValueError:
             pass
     
