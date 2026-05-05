@@ -112,22 +112,22 @@ game_board = {
             "-7,-9":"Plains.","-6,-9":"Plains with Road to the East.","-5,-9":"Road with Plains to North/West and Rocky area to the East. The air has a fresh salty smell.","-4,-9":"You fell in the dit"+"ch and cant see anything. The air has a fresh salty smell.","-3,-9":"Rocky area with Road to North/West and sea to South/East.",
             "-7,-8":"Plains.","-5,-8":"Plains with Road to South/East.","-4,-8":"You fell in the dit"+"ch and cant see anything!","-3,-8":"Road with Plains to North/West and a Rocky area to South/East.","-2,-8":"Rocky area with Road to North/West and sea to South/East.",
             "-7,-7":"Plains with Forest to the North.","-6,-7":"Plains with Forest to the North.","-5,-7":"Plains.","-4,-7":"Plains with Road to South/East.","-3,-7":"You fell in the dit"+"ch and cant see anything!","-2,-7":"Road with Plains to North/West and a Rocky area to South/East.","-1,-7":"Rocky area with Road to North/West and sea to South/East.",
-            "-7,-6":"Forest with Plains to South/East.","-6,-6":"Forest with Plains to South/East.","-5,-6":"Plains with Forest to North/West.","-4,-6":"Plains with Forest to North/West.","-3,-6":"Plains with Forest to the North.","-2,-6":"You fell in the dit"+"ch and cant see anything!","-1,-6":"Road with Plains to the West and Rocky area to South/East.","0,-6":"Rocky area with Road to North/West, sea to South/East and Fields to North/East.","1,-6":"Rocky area with Fields to the North. To the South some big boulders block you are vision.","2,-6":"you are standing on a large boulder and can se far into the distance. To the North Fields stretch on forever. To the South just sea and to North/West Forest stretches on forever over which some tall Mountains can be seen.",
-            "-7,-5":"Dense Forest. The trees block all view of the surrounding area.","-6,-5":"Forest. You glimpse some light to South/East.","-5,-5":"Forest with Plains to South/East.","-4,-5":"Plains with Forest to North/West.","-3,-5":"Plains with Forest to North/West.","-2,-5":"Plains with Forest to North/West and Road to South/East.","-1,-5":"Road with Plains to the West and Fields to the East.","0,-5":"Fields with Road to the West and Rocky area to the South. you are on a Field trail.","1,-5":"Fields with Rocky area to the South. you are on a Field trail going West - East.","2,-5":"Fields with Rocky area to the South. you are on a Field trail going West - East.","3,-5":"Fields with Rocky area to South/West. you are on a Field trail going West - East.","4,-5":"Fields. you are on a Field trail going West - East.","5,-5":"Fields. you are on a Field trail going West - East.","6,-5":"Fields. you are at the end of a Field trail going West - East.",
-            "-8,-4":"Forest. Congratulations on finding out that the West end of the map is not perfectly straight! Choose between minute box, tiny box, small box, box, large box, huge box, box that weighs a ton or stick.","-7,-4":"Dense Forest. The trees block all view of the surrounding area.","-6,-4":"Dense Forest. The trees block all view of the surrounding area.","-5,-4":"Dense Forest. The trees blocks all view of the surrounding area.","-4,-4":"Dense Forest. You glimpse a light to South/East.","-3,-4":"Forest with Plains to South/East.","-2,-4":"Plains with Forest to North/West.","-1,-4":"You fell in the dit"+"ch and cant see anything!","0,-4":"You fell in the dit"+"ch and cant see anything!","1,-4":"Fields. you are bushwhacking trough Corn.","2,-5":"Fields. you are bushwhacking trough Corn.","3,-4":"Fields. you are bushwhacking trough Corn.","4,-4":"Fields. you are bushwhacking trough Corn.","5,-4":"Fields. you are bushwhacking trough Corn.","6,-4":"Fields. you are bushwhacking trough Corn.",
-            "-7,-3":"Dense Forest. The trees blocks all view of the surrounding area.","-6,-3":"Dense Forest. The trees blocks all view of the surrounding area.","-5,-3":"Dense Forest. The trees blocks all view of the surrounding area.","-4,-3":"Dense Forest. The trees blocks all view of the surrounding area.","-3,-3":"Dense Forest with Plains to South/East.","-2,-3":"Forest with Plains to the South.","-1,-3":"Forest with Plains to the South and Road to the East.","0,-3":"Road with Forest to the West, Plains to South/West and Fields to the East.","1,-3":"Fields with Road to the West. you are on a Field trail going West - East.","2,-3":"Fields. you are on a Field trail going West - East.","3,-3":"Fields. you are on a Field trail going West - East.","4,-3":"Fields. you are on a Field trail going West - East.","5,-3":"Fields. you are on a Field trail going West - East.","6,-3":"Fields. you are at the end of a Field trail going West - East.",
-            "-7,-2":"Dense Forest. The trees blocks all view of the surrounding area.","-6,-2":"Dense Forest. The trees blocks all view of the surrounding area.","-5,-2":"Dense Forest. The trees blocks all view of the surrounding area.","-4,-2":"Dense Forest. The trees blocks all view of the surrounding area.","-3,-2":"Dense Forest. The trees blocks all view of the surrounding area.","-2,-2":"Dense Forest. The trees blocks all view of the surrounding area.","-1,-2": "Forest with Road to the East.","0,-2":"Road with Forest to the West and Fields to the East.","1,-2":"Fields with Road to the West. you are bushwhacking through Wheat.","2,-2":"Fields. you are bushwhacking through Wheat. The wheat is so thick you cant see you are own feet!","3,-2":"Fields. you are bushwhacking through Wheat.","4,-2":"Fields. you are bushwhacking through Wheat.","5,-2":"Fields. you are bushwhacking through Wheat. You see a small barn to North/East.","6,-2":"Fields. you are bushwhacking through Wheat. You se a small barn to the North.",
-            "-7,-1":"Dense Forest. You see a clearing to the North.","-6,-1":"Dense Forest. You glimpse a clearing to North/West.","-5,-1":"Dense Forest. The trees blocks all view of the surrounding area.","-4,-1":"Dense Forest. The trees blocks all view of the surrounding area.","-3,-1":"Dense Forest. The trees blocks all view of the surrounding area.","-2,-1":"Dense Forest. The trees blocks all view of the surrounding area.","-1,-1":"Forest with Road to the East.","0,-1":"Road with Forest to the West and Fields to the East.","1,-1":"Fields with Road to West. you are on a Field trail going West - East.","2,-1":"Fields. you are on a Field trail going West - East.","3,-1":"Fields. you are on a Field trail going West - East.","4,-1":"Fields. you are on a Field trail going West - East.","5,-1":"Fields. You see a small barn to the East. you are on a Field trail going West - East.","6,-1": "Fields. You see a small barn, the red paint peeling off. The front doors are closed. you are on a Field trail going West - East.",
-            "-7,0":"you are standing in a clearing. To the North you see a small mound of dirt.","-6,0":"Forest. You se a clearing to North/West.", "-5,0":"Dense Forest. The trees blocks all view of the surrounding area.","-4,0":"Dense Forest. The trees blocks all view of the surrounding area.","-3,0":"Dense Forest. The trees blocks all view of the surrounding area.","-2,0":"Dense Forest. The trees blocks all view of the surrounding area.","-1,0":"Forest with Road to the East.","0,0":"you are standing on the start point.","1,0":"Fields with Road to the West. you are bushwhacking through Barley.","2,0":"Fields. you are bushwhacking through Barley.","3,0":"Fields. you are bushwhacking through Barley.","4,0":"Fields. you are bushwhacking through Barley.","5,0":"Fields. you are bushwhacking through Barley. You see a small barn to South/East.","6,0":"Fields. you are bushwhacking through Barley. You see a small barn to the South.",
-            "-7,1":"you are standing in a clearing with woods all around. In front of you is a pile of rocks laying on a small mound of dirt.","-6,1":"Dense Forest with a clearing to the West.","-5,1":"Dense Forest. The trees blocks all view of the surrounding area.","-4,1":"Dense Forest. You see a tall tree to South/East.","-3,1":"Dense Forest. You see a tall tree to the South.","-2,1":"Dense Forest. You see a tall tree to South/West.","-1,1":"Forest with Road to the East.","0,1":"Road with Forest to the West and Fields to the East.","1,1":"Fields with Road to West. you are on a Field trail going West - East.","2,1":"Fields. you are on a Field trail going West - East.","3,1":"Fields. you are on a Field trail going West - East.","4,1":"Fields. you are on a Field trail going West - East.","5,1":"Fields. you are on a Field trail going West - East.","6,1": "Fields. you are at the end of a Field trail going West - East.",
-            "-7,2":"Forest with a clearing to the South.","-6,2":"Dense Forest. The trees blocks all view of the surrounding area.","-5,2":"Dense Forest. The trees blocks all view of the surrounding area.","-4,2":"Dense Forest. You see a tall tree to the East.","-3,2":"Dense Forest. A tall tree stands before you. The trees blocks any other view of the surrounding area.","-2,2":"Dense Forest. You see a tall tree to the West.","-1,2":"Forest with Road to the East.","0,2":"Road with Forest to the West and Fields to the East.","1,2":"Fields with Road to West. you are bushwhacking through Canola.","2,2":"Fields. you are bushwhacking through Canola.","3,2":"Fields. you are bushwhacking through Canola.","4,2":"Fields. you are bushwhacking through Canola.","5,2":"Fields. you are bushwhacking through Canola.","6,2":"Fields. you are bushwhacking through Canola.",
-            "-7,3":"Dense Forest. The trees blocks all view of the surrounding area.","-6,3":"Dense Forest. The trees blocks all view of the surrounding area.","-5,3":"Dense Forest. The trees blocks all view of the surrounding area.","-4,3":"Dense Forest. You see a tall tree to North/East.","-3,3":"Dense Forest. You see a tall tree to the North.","-2,3":"Dense Forest. You see a tall tree to North/West.","-1,3":"Forest with Road to the East.","0,3":"Road with Forest to the West and Fields to the East.","1,3":"Fields with Road to West. you are on a Field trail going West - East.","2,3":"Fields. you are on a Field trail going West - East.","3,3":"Fields. you are on a Field trail going West - East.","4,3":"Fields. you are on a Field trail going West - East.","5,3":"Fields. you are on a Field trail going West - East.","6,3": "Fields. you are at the end of a Field trail going West - East.",
-            "-7,4":"Dense Forest. The trees blocks all view of the surrounding area.","-6,4":"Dense Forest. The trees blocks all view of the surrounding area.","-5,4":"Dense Forest. You glimpse a light to North/East.","-4,4":"Forest with Rocky area to North/East.","-3,4":"Forest with Rocky area to North/East.","-2,4":"Rocky area with Forest to South/West.","-1,4":"You fell in the dit"+"ch and cant see anything!","0,4":"Fields with Road to the West. you are bushwhacking through Rice.","1,4":"Fields. you are bushwhacking through Rice.","2,4":"Fields. you are bushwhacking through Rice.","3,4":"Fields. you are bushwhacking through Rice.","4,4":"Fields. you are bushwhacking through Rice. You see a Boathouse to North/East.","5,4":"Fields. you are bushwhacking through Rice. You see a Boathouse to the North.","6,4":"Fields. you are bushwhacking through Rice. You see a Boathouse to North/West.",
+            "-7,-6":"Forest with Plains to South/East.","-6,-6":"Forest with Plains to South/East.","-5,-6":"Plains with Forest to North/West.","-4,-6":"Plains with Forest to North/West.","-3,-6":"Plains with Forest to the North.","-2,-6":"You fell in the dit"+"ch and cant see anything!","-1,-6":"Road with Plains to the West and Rocky area to South/East.","0,-6":"Rocky area with Road to North/West, sea to South/East and Fields to North/East.","1,-6":"Rocky area with Fields to the North. To the South some big boulders block your vision.","2,-6":"you are standing on a large boulder and can se far into the distance. To the North Fields stretch on forever. To the South just sea and to North/West Forest stretches on forever over which some tall Mountains can be seen.",
+            "-7,-5":"Dense Forest. The trees block all view of the surrounding area.","-6,-5":"Forest. You glimpse some light to South/East.","-5,-5":"Forest with Plains to South/East.","-4,-5":"Plains with Forest to North/West.","-3,-5":"Plains with Forest to North/West.","-2,-5":"Plains with Forest to North/West and Road to South/East.","-1,-5":"Road with Plains to the West and Fields to the East.","0,-5":"Fields with Road to the West and Rocky area to the South. You are on a Field trail.","1,-5":"Fields with Rocky area to the South. You are on a Field trail going West - East.","2,-5":"Fields with Rocky area to the South. You are on a Field trail going West - East.","3,-5":"Fields with Rocky area to South/West. You are on a Field trail going West - East.","4,-5":"Fields. You are on a Field trail going West - East.","5,-5":"Fields. You are on a Field trail going West - East.","6,-5":"Fields. You are at the end of a Field trail going West - East.",
+            "-8,-4":"Forest. Congratulations on finding out that the West end of the map is not perfectly straight! Choose between minute box, tiny box, small box, box, large box, huge box, box that weighs a ton or stick.","-7,-4":"Dense Forest. The trees block all view of the surrounding area.","-6,-4":"Dense Forest. The trees block all view of the surrounding area.","-5,-4":"Dense Forest. The trees blocks all view of the surrounding area.","-4,-4":"Dense Forest. You glimpse a light to South/East.","-3,-4":"Forest with Plains to South/East.","-2,-4":"Plains with Forest to North/West.","-1,-4":"You fell in the dit"+"ch and cant see anything!","0,-4":"You fell in the dit"+"ch and cant see anything!","1,-4":"Fields. You are bushwhacking trough Corn.","2,-5":"Fields. You are bushwhacking trough Corn.","3,-4":"Fields. You are bushwhacking trough Corn.","4,-4":"Fields. You are bushwhacking trough Corn.","5,-4":"Fields. You are bushwhacking trough Corn.","6,-4":"Fields. You are bushwhacking trough Corn.",
+            "-7,-3":"Dense Forest. The trees blocks all view of the surrounding area.","-6,-3":"Dense Forest. The trees blocks all view of the surrounding area.","-5,-3":"Dense Forest. The trees blocks all view of the surrounding area.","-4,-3":"Dense Forest. The trees blocks all view of the surrounding area.","-3,-3":"Dense Forest with Plains to South/East.","-2,-3":"Forest with Plains to the South.","-1,-3":"Forest with Plains to the South and Road to the East.","0,-3":"Road with Forest to the West, Plains to South/West and Fields to the East.","1,-3":"Fields with Road to the West. You are on a Field trail going West - East.","2,-3":"Fields. You are on a Field trail going West - East.","3,-3":"Fields. You are on a Field trail going West - East.","4,-3":"Fields. You are on a Field trail going West - East.","5,-3":"Fields. You are on a Field trail going West - East.","6,-3":"Fields. You are at the end of a Field trail going West - East.",
+            "-7,-2":"Dense Forest. The trees blocks all view of the surrounding area.","-6,-2":"Dense Forest. The trees blocks all view of the surrounding area.","-5,-2":"Dense Forest. The trees blocks all view of the surrounding area.","-4,-2":"Dense Forest. The trees blocks all view of the surrounding area.","-3,-2":"Dense Forest. The trees blocks all view of the surrounding area.","-2,-2":"Dense Forest. The trees blocks all view of the surrounding area.","-1,-2": "Forest with Road to the East.","0,-2":"Road with Forest to the West and Fields to the East.","1,-2":"Fields with Road to the West. You are bushwhacking through Wheat.","2,-2":"Fields. You are bushwhacking through Wheat. The wheat is so thick you cant see you are own feet!","3,-2":"Fields. You are bushwhacking through Wheat.","4,-2":"Fields. You are bushwhacking through Wheat.","5,-2":"Fields. You are bushwhacking through Wheat. You see a small barn to North/East.","6,-2":"Fields. You are bushwhacking through Wheat. You se a small barn to the North.",
+            "-7,-1":"Dense Forest. You see a clearing to the North.","-6,-1":"Dense Forest. You glimpse a clearing to North/West.","-5,-1":"Dense Forest. The trees blocks all view of the surrounding area.","-4,-1":"Dense Forest. The trees blocks all view of the surrounding area.","-3,-1":"Dense Forest. The trees blocks all view of the surrounding area.","-2,-1":"Dense Forest. The trees blocks all view of the surrounding area.","-1,-1":"Forest with Road to the East.","0,-1":"Road with Forest to the West and Fields to the East.","1,-1":"Fields with Road to West. You are on a Field trail going West - East.","2,-1":"Fields. You are on a Field trail going West - East.","3,-1":"Fields. You are on a Field trail going West - East.","4,-1":"Fields. You are on a Field trail going West - East.","5,-1":"Fields. You see a small barn to the East. You are on a Field trail going West - East.","6,-1": "Fields. You see a small barn, the red paint peeling off. The front doors are closed. You are on a Field trail going West - East.",
+            "-7,0":"you are standing in a clearing. To the North you see a small mound of dirt.","-6,0":"Forest. You se a clearing to North/West.", "-5,0":"Dense Forest. The trees blocks all view of the surrounding area.","-4,0":"Dense Forest. The trees blocks all view of the surrounding area.","-3,0":"Dense Forest. The trees blocks all view of the surrounding area.","-2,0":"Dense Forest. The trees blocks all view of the surrounding area.","-1,0":"Forest with Road to the East.","0,0":"You are standing on the start point.","1,0":"Fields with Road to the West. You are bushwhacking through Barley.","2,0":"Fields. You are bushwhacking through Barley.","3,0":"Fields. You are bushwhacking through Barley.","4,0":"Fields. You are bushwhacking through Barley.","5,0":"Fields. You are bushwhacking through Barley. You see a small barn to South/East.","6,0":"Fields. You are bushwhacking through Barley. You see a small barn to the South.",
+            "-7,1":"you are standing in a clearing with woods all around. In front of you is a pile of rocks laying on a small mound of dirt.","-6,1":"Dense Forest with a clearing to the West.","-5,1":"Dense Forest. The trees blocks all view of the surrounding area.","-4,1":"Dense Forest. You see a tall tree to South/East.","-3,1":"Dense Forest. You see a tall tree to the South.","-2,1":"Dense Forest. You see a tall tree to South/West.","-1,1":"Forest with Road to the East.","0,1":"Road with Forest to the West and Fields to the East.","1,1":"Fields with Road to West. You are on a Field trail going West - East.","2,1":"Fields. You are on a Field trail going West - East.","3,1":"Fields. You are on a Field trail going West - East.","4,1":"Fields. You are on a Field trail going West - East.","5,1":"Fields. You are on a Field trail going West - East.","6,1": "Fields. You are at the end of a Field trail going West - East.",
+            "-7,2":"Forest with a clearing to the South.","-6,2":"Dense Forest. The trees blocks all view of the surrounding area.","-5,2":"Dense Forest. The trees blocks all view of the surrounding area.","-4,2":"Dense Forest. You see a tall tree to the East.","-3,2":"Dense Forest. A tall tree stands before you. The trees blocks any other view of the surrounding area.","-2,2":"Dense Forest. You see a tall tree to the West.","-1,2":"Forest with Road to the East.","0,2":"Road with Forest to the West and Fields to the East.","1,2":"Fields with Road to West. You are bushwhacking through Canola.","2,2":"Fields. You are bushwhacking through Canola.","3,2":"Fields. You are bushwhacking through Canola.","4,2":"Fields. You are bushwhacking through Canola.","5,2":"Fields. You are bushwhacking through Canola.","6,2":"Fields. You are bushwhacking through Canola.",
+            "-7,3":"Dense Forest. The trees blocks all view of the surrounding area.","-6,3":"Dense Forest. The trees blocks all view of the surrounding area.","-5,3":"Dense Forest. The trees blocks all view of the surrounding area.","-4,3":"Dense Forest. You see a tall tree to North/East.","-3,3":"Dense Forest. You see a tall tree to the North.","-2,3":"Dense Forest. You see a tall tree to North/West.","-1,3":"Forest with Road to the East.","0,3":"Road with Forest to the West and Fields to the East.","1,3":"Fields with Road to West. You are on a Field trail going West - East.","2,3":"Fields. You are on a Field trail going West - East.","3,3":"Fields. You are on a Field trail going West - East.","4,3":"Fields. You are on a Field trail going West - East.","5,3":"Fields. You are on a Field trail going West - East.","6,3": "Fields. You are at the end of a Field trail going West - East.",
+            "-7,4":"Dense Forest. The trees blocks all view of the surrounding area.","-6,4":"Dense Forest. The trees blocks all view of the surrounding area.","-5,4":"Dense Forest. You glimpse a light to North/East.","-4,4":"Forest with Rocky area to North/East.","-3,4":"Forest with Rocky area to North/East.","-2,4":"Rocky area with Forest to South/West.","-1,4":"You fell in the dit"+"ch and cant see anything!","0,4":"Fields with Road to the West. You are bushwhacking through Rice.","1,4":"Fields. You are bushwhacking through Rice.","2,4":"Fields. You are bushwhacking through Rice.","3,4":"Fields. You are bushwhacking through Rice.","4,4":"Fields. You are bushwhacking through Rice. You see a Boathouse to North/East.","5,4":"Fields. You are bushwhacking through Rice. You see a Boathouse to the North.","6,4":"Fields. You are bushwhacking through Rice. You see a Boathouse to North/West.",
             "-7,5":"Forest with Mountains to North/East.","-6,5":"Forest with Mountains to North/East.","-5,5":"Forest with Mountains to North/East.","-4,5":"Valley with Mountains to the North and Forest to the South.","-3,5":"Valley with Mountains to the North and Forest to the South.","-2,5":"Rocky area with Mountains to North/West and Forest to South/West.","-1,5":"Rocky area.","0,5":"Rocky area with Road to South/East.","1,5":"Road with Rocky area to the West.","2,5":"Light Forest with Road to the West and fields to the South.","3,5":"Light Forest with Fields to the south.","4,5":"Light Forest with Fields to the South and Lake to North/East. You see a Boathouse to the East.","5,5":"Plains with Forest to the West, Fields to the South and Lake to the North. Before you is a Boathouse with no visible means of entry except a boarded up door.","6,5":"Plains with Fields to the South and Lake to North/West. You see a Boathouse to the West",
             "-7,6":"Valley with Forest to the South and Mountains to the North.","-6,6":"Valley with Forest to the South and Mountains to the North.","-5,6":"Valley between a Mountain to the west and another one to the East.","-4,6":"You climbed up a mountain. From here you can see very far into the distance. To the East a wide Rocky area lies. To the South Forest stretches on as far as you can see.","-3,6":"You climbed up a mountain. From here you can see very far into the distance. To the East a wide Rocky area lies. To the South Forest stretches on as far as you can see.","-2,6":"Rocky area with Mountains to the West.","-1,6":"Rocky area.","0,6":"Rocky area with Road to the South/East.","1,6":"You fell in the dit"+"ch and cant see anything!","2,6":"Light Forest with Road to the West.","3,6":"Light Forest with Lake to the East.","4,6":"Lake. Boathouse lies South/East from here.","5,6":"Lake. Boathouse lies to the South.","6,6":"Lake. Boathouse lies South/West from here.",
     },
     "barn_board":{"0,0":"Two big barn doors loom up in front of you. You can not open them, because their locked from the inside.",
-                  "0,1":"you are in the south part of the barn. To you are left is a manure tunnel. It makes the whole barns stink. To you are right you see two small weird holes in the ground. In front of you is a tower of hay. The roof looks lower on the inside then on the outside. Two large barn doors tower upp behind you locked by a huge shiny padlock.",}
+                  "0,1":"you are in the south part of the barn. To your left is a manure tunnel. It makes the whole barns stink. To your right you see two small weird holes in the ground. In front of you is a tower of hay. The roof looks lower on the inside then on the outside. Two large barn doors tower upp behind you locked by a huge shiny padlock.",}
 }
 
 
@@ -147,7 +147,7 @@ turns = -1
 player_stats = {"health":100,"hunger":100,"thirst":100,"attack":15,"strength":15,"defense":10,"start_time":0,"play_time":0,"xp":{"total":0}}
 enter = 5
 lastxy = "0,0"
-info = ["IMPORTANT - turning off terminal without using the proper exit command will delete you are acount!"," ","Informational commands: 'INFO' - shows this message.","'INVENTORY' - shows you are whole inventory.","'WEAPONS' - shows you are weapons","'FOOD' - shows you are food","'WATER' - shows any water bottles you own and their status.","'STATS' - shows you are stats.","'ACHIEVEMENTS' - shows you are achievements.","'DEATHS' - shows all the ways you have died."," ",""]
+info = ["IMPORTANT - turning off terminal without using the proper exit command will delete your acount!"," ","Informational commands: 'INFO' - shows this message.","'INVENTORY' - shows your whole inventory.","'WEAPONS' - shows your weapons","'FOOD' - shows your food","'WATER' - shows any water bottles you own and their status.","'STATS' - shows your stats.","'ACHIEVEMENTS' - shows your achievements.","'DEATHS' - shows all the ways you have died."," ",""]
 typespeed = 0
 wait = time.sleep
 exit_event = Event()
@@ -319,12 +319,12 @@ def Search():
     chance = random.randint(0,100)
     if chance <= 10:
         amount = random.randint(1,4)
-        printz(f"you found {amount} snail pieces in you are surrounding area! They each are worth 10 hunger points, but might give you food poisoning!")
+        printz(f"You found {amount} snail pieces in your surrounding area! They each are worth 10 hunger points, but might give you food poisoning!")
         items["food"]["snail_pieces"]["owned"] += amount
     elif chance >= 90:
         printz("You found a 500 ml bottle of dirty water! It is worth 50 thirst points, but might poison you!")
     else:
-        printz("You did not find anything in you are surrounding area.")
+        printz("You did not find anything in your surrounding area.")
 
 def bold(text):
     return f"\033[1m{text}\033[22m"
@@ -460,7 +460,7 @@ def FIGHT(enemy):
             printz(f"You decided to fight the "+name+"!")
             print(" ")
             printz(f"You have: {player_stats['health']} hp!")
-            printz(f"you are enemy has: "+str(int(enemy.health))+" hp!")
+            printz(f"your enemy has: "+str(int(enemy.health))+" hp!")
             print(" ")
 
 
@@ -487,9 +487,9 @@ def FIGHT(enemy):
                         printz(f"You have no weapons to fight with! You have to try to run away from the "+name+".")
                         run = True
                         continue
-                    printz(f"Its you are turn.")
+                    printz(f"Its your turn.")
                     print(" ")
-                    printz(f"you are weapons:")
+                    printz(f"your weapons:")
                     print(" ")
                     for weapon in items["weapons_and_items"]:
                         try:
@@ -523,15 +523,15 @@ def FIGHT(enemy):
                     attacked_hp, strength = weapon_action(weapon,player_stats)
                     print(" ")
                     if attacked_hp == 0 and strength == 0:
-                        printz(f"you are attack with "+str(weapon)+" missed and you took 0 hp!")
+                        printz(f"your attack with "+str(weapon)+" missed and you took 0 hp!")
                     elif strength < enemy.defense:
                         printz(f"You did not have enough strength to penetrate the enemies defenses and took 0 hp!")
                     elif strength >= enemy.defense:
                         enemy.health -= attacked_hp
-                        printz(f"you are attack with "+str(weapon)+", hit and took "+str(attacked_hp)+" hp from you are enemy!")
+                        printz(f"your attack with "+str(weapon)+", hit and took "+str(attacked_hp)+" hp from your enemy!")
                         print(" ")
                         printz(f"You have: {player_stats['health']}hp!")
-                        printz(f"you are enemy has: {enemy.health}hp!")
+                        printz(f"your enemy has: {enemy.health}hp!")
                     if enemy.health < 1:
                         alive = True
                         infight = False
@@ -539,7 +539,7 @@ def FIGHT(enemy):
                             Continue = inputz("Do you want to continue fighting or do you want to try to run away? Continue (y/n)?>  ")
                             if Continue in COMMANDS["yes"]:
                                 printz(f"You have: {player_stats['health']}hp!")
-                                printz(f"you are enemy has: {int(enemy.health)}hp!")
+                                printz(f"your enemy has: {int(enemy.health)}hp!")
                                 your = False
                                 break
                             elif Continue in COMMANDS["no"]:
@@ -557,7 +557,7 @@ def FIGHT(enemy):
                             your = False
                             print(" ")
                             printz(f"You have: {player_stats['health']}hp!")
-                            printz(f"you are enemy has: {enemy.health}hp!")
+                            printz(f"your enemy has: {enemy.health}hp!")
                             break
                         elif Continue in COMMANDS["no"]:
                             break
@@ -568,13 +568,13 @@ def FIGHT(enemy):
 
 
                 elif your == False:
-                    printz(f"Its you are enemies turn!")
+                    printz(f"Its your enemies turn!")
                     print(" ")
                     if player_stats["defense"] < random.randint(enemy.strength//2, enemy.strength):
                         player_stats["health"] -= enemy.attack
-                        printz(f"you are enemy took {enemy.attack} hp from you!")
+                        printz(f"your enemy took {enemy.attack} hp from you!")
                     else:
-                        printz(f"you are enemy did not have enough strength to penetrate you are defenses and took 0 hp!")
+                        printz(f"your enemy did not have enough strength to penetrate your defenses and took 0 hp!")
                     if player_stats["health"] < 1:
                         alive = False
                         infight = False
@@ -583,7 +583,7 @@ def FIGHT(enemy):
                         continue
                     print(" ")
                     printz(f"You have: {player_stats['health']}hp!")
-                    printz(f"you are enemy has: {enemy.health}hp!")
+                    printz(f"your enemy has: {enemy.health}hp!")
 
             if alive == True and run == False:
                 printz(f"You defeated the "+name+"! Congratulations!")
@@ -641,7 +641,7 @@ def angry_farmer(crop,data,username,x,y):
     wait(3)
     printz(f"You get very scared, so you start running away from the farmer. You dont think about that you could fight him.")
     wait(2)
-    printz(f"Help you are character by typing 'left' or 'right' when there comes a obstacle!")
+    printz(f"Help your character by typing 'left' or 'right' when there comes a obstacle!")
     wait(1)
 
     Countdown(15)
@@ -651,7 +651,7 @@ def angry_farmer(crop,data,username,x,y):
     survived = RUN(6,2.89)
     if survived == False:
         wait(4)
-        printz(f"The farmer raises the pitchfork over you are head.")
+        printz(f"The farmer raises the pitchfork over your head.")
         wait(4)
         printz(f"He says 'THU SHALL NEVER BUSHWHACK MY "+crop.upper()+" AGAIN! Smash.")
         wait(4)
@@ -659,7 +659,7 @@ def angry_farmer(crop,data,username,x,y):
         del data[username]
         json_dump(data)
         wait(4)
-        printz(f"you are user has been deleted.")
+        printz(f"your user has been deleted.")
         wait(4)
         printz(f"Better luck (and skills) next time.")
         attrdict["death"][xy] = "You died by a pitchfork to the head"
@@ -669,7 +669,7 @@ def angry_farmer(crop,data,username,x,y):
     wait(3)
     printz(f"The strain of running away from the farmer was too much for you, and you collapsed on the ground, unconscious for 20 seconds.")
     Countdown(20)
-    printz(f"You woke up and can now continue you are adventure.")
+    printz(f"You woke up and can now continue your adventure.")
     wait(3)
 
     i = 5
@@ -687,9 +687,9 @@ def angry_farmer(crop,data,username,x,y):
             printz(f"Invalid operation: '"+lost_input+"'. Try 'go 'direction''.")
     printz(f"Oh, no!") 
     wait(2)
-    printz(f"You dont know where you are, where West is, where East is, where North is, and where South is!")
+    printz(f"You dont know where your, where West is, where East is, where North is, and where South is!")
     wait(4)
-    printz(f"The only thing you realize is that you are in a forest.")
+    printz(f"The only thing you realize is that your in a forest.")
     wait(3)
     printz(f"How are you going to get back?")
 
@@ -722,7 +722,7 @@ def angry_farmer(crop,data,username,x,y):
                 printz(f"You decided to go West.")
                 wait(1)
                 Countdown(i)
-                printz(f"you are journey West brings you past a large lake and to a tall mountain range.")
+                printz(f"your journey West brings you past a large lake and to a tall mountain range.")
                 wait(3)
                 printz(f"You dont recognize the surroundings and cant get past the mountain range.")
                 wait(3)
@@ -733,19 +733,19 @@ def angry_farmer(crop,data,username,x,y):
                 printz(f"You decided to go East.")
                 wait(1)
                 Countdown(i)
-                printz(f"you are journey East brought you into familiar territory")
+                printz(f"your journey East brought you into familiar territory")
                 wait(3)
-                printz(f"Now you are actually back in the game,")
+                printz(f"Now your actually back in the game,")
                 wait(3)
-                printz(f"but you dont know where on the board you are!")
+                printz(f"but you dont know where on the board your!")
                 break
             elif directional_input[2:] == "south":
                 print("You decided to go South.")
                 wait(1)
                 Countdown(i)
-                printz(f"you are journey South brings you past a wide river and you end up by the sea.")
+                printz(f"your journey South brings you past a wide river and you end up by the sea.")
                 wait(3)
-                printz(f"You dont recognize you are surroundings and cant get past the sea.")
+                printz(f"You dont recognize your surroundings and cant get past the sea.")
                 wait(3)
                 printz(f"You walk back to the point you started at.")
                 Countdown(i)
@@ -753,9 +753,9 @@ def angry_farmer(crop,data,username,x,y):
                 printz(f"You decided to go North.")
                 wait(1)
                 Countdown(i)
-                printz(f"you are journey North brings you past a range of mountains and end at a wide plain, stretching on forever!")
+                printz(f"your journey North brings you past a range of mountains and end at a wide plain, stretching on forever!")
                 wait(3)
-                printz(f"You dont recognize you are surroundings and dont want to embark the plain.")
+                printz(f"You dont recognize your surroundings and dont want to embark the plain.")
                 wait(3)
                 printz(f"You walk back.")
                 Countdown(i)
@@ -824,7 +824,7 @@ def SWIM(data,username):
             Game_over()
         elif survived == True:
             printz(f"You survived!")
-            printz(f"You are back at the same place you started from and did not drift away.")
+            printz(f"Your back at the same place you started from and did not drift away.")
 
 def json_pack(username,x,y):
         data[username] = {"password": password, "x": x, "y": y, "items": items, "achieved": achieved,"turns":turns,"trespass":trespass,"player_stats":player_stats,"lastxy":lastxy,"attrdict":attrdict}
@@ -940,7 +940,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                     wait(3)
                     printz(f"You already unlocked the 'admin' achievement! Who are you trying to trick?")
                     wait(3)
-                    printz(f"{username}! You are trying to trick me! I know you already unlocked the 'admin' achievement! Stop trying to trick me!")
+                    printz(f"{username}! Your trying to trick me! I know you already unlocked the 'admin' achievement! Stop trying to trick me!")
                     wait(3)
                     printz(f"I hope you still enjoy the game, even if you dont like me. :)")
                     if username == "z":
@@ -989,7 +989,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                     elif command == "tinybox":
                         printz(f"You picked up tiny box.")
                         wait(s_wait)
-                        printz(f"Oh, no. You put tiny box in you are pocket and it slipped trough a hole! You can`t find it.")
+                        printz(f"Oh, no. You put tiny box in your pocket and it slipped trough a hole! You can`t find it.")
                         attrdict["attr"].append("box")
                     elif command == "smallbox":
                         printz(f"You picked up small box. It makes a weird sloshy sound when you shake it.")
@@ -1070,7 +1070,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
             flag = "open"
             if target in TARGETS["starter_food"]:
                 if items["food"]["starter_food"]["owned"] == 1:
-                    printz(f"You opened starter food pack and found bottles of water, bread and 5 throwing stars. You put the water, bread and throwing stars in you are inventory.")
+                    printz(f"You opened starter food pack and found bottles of water, bread and 5 throwing stars. You put the water, bread and throwing stars in your inventory.")
                     items["water"]["0.5l_full_bottle"]["owned"] += 3
                     items["food"]["bread"]["owned"] += 3
                     items["weapons_and_items"]["stars"]["owned"] += 5
@@ -1098,7 +1098,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                                 return x,y,flag,turns,data,enter
                             else:
                                 printz(f"Invalid input: '{y_n}'. Type 'y' or 'n'.")
-                    printz(f"You ate the {target} and increased you are hunger by {items["food"][target]["value"]} points!")
+                    printz(f"You ate the {target} and increased your hunger by {items["food"][target]["value"]} points!")
                     player_stats["hunger"] += items["food"][target]["value"]
                     items["food"][target]["owned"] -= 1
                 else:
@@ -1119,7 +1119,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                 if len(drinkable) == 0:
                     printz(f"You dont have any water bottles to drink from!")
                 elif player_stats["thirst"] >= 100:
-                    printz(f"You are not thirsty right now.")
+                    printz(f"Your not thirsty right now.")
                 else:
                     printz("Choose a water bottle to drink from:")
                     for i, bottle_name in enumerate(drinkable, start=1):
@@ -1187,7 +1187,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                                 selected["%"] = 100
                             else:
                                 selected["%"] = 0
-                            printz(f"you are {selected_key} is now empty. It has been moved to {empty_key}.")
+                            printz(f"your {selected_key} is now empty. It has been moved to {empty_key}.")
             else:
                 printz(f"You cant drink a {target}!")
         
@@ -1206,19 +1206,19 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                 if i == True:
                     i = False
                     if xy in attrdict["searched_ditch"]:
-                        printz("You are filling up you are water bottles in a ditch!")
+                        printz("You are filling up your water bottles in a ditch!")
                         wait(2)
                         printz("This might poison you!")
                         i = True
                     elif xy in attrdict["water_sources"]:
-                        printz("You are filling upp you are water bottles in clean fresh water!")
+                        printz("You are filling upp your water bottles in clean fresh water!")
                         wait(2)
                         printz("This probably wont get poisoned")
                         i = True
                     if i == True:
                         fill()
                     else:
-                        printz("You cant fill upp you are water bottles here, there is no freshwater!")
+                        printz("You cant fill upp your water bottles here, there is no freshwater!")
                 else:
                     printz(f"You dont have any {target}'s to fill up!")
             else:
@@ -1236,7 +1236,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                     printz(f"You already searched the dit"+"ch here. You do not find anything new.")
             elif target in TARGETS["area"]:
                 if xy not in attrdict["searched"]:
-                    printz("You are searching you are surrounding area.")
+                    printz("You are searching your surrounding area.")
                     Countdown(random.randint(5,15))
                     Search()
                     attrdict["searched"].append(xy)
@@ -1256,7 +1256,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                             printz(f"You see an entrance to a mine.")
                             attrdict["attr"].append("moved_mine_rocks")
                         else:
-                            printz(f"The rocks are too heavy to move with you are bare hands. You need to find something to use as leverage.")
+                            printz(f"The rocks are too heavy to move with your bare hands. You need to find something to use as leverage.")
                     else:
                         printz(f"You already moved the rocks and revealed the mine entrance!")
                 else:
@@ -1294,7 +1294,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
         elif command in COMMANDS["climb"]:
             if x == -3 and y == 2:
                 if target in TARGETS["tree"]:
-                    printz(f"You are climbing the tall tree!")
+                    printz(f"Your climbing the tall tree!")
                     wait(2)
                     printz(f"This takes time.")
                     Countdown(10)
@@ -1318,7 +1318,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                                     wait(3)
                                     printz(f"You can now use the map to navigate the area!")
                                     wait(3)
-                                    printz(f"You can also use the map to find you are way in the mines!")
+                                    printz(f"You can also use the map to find your way in the mines!")
                                 else:
                                     printz(f"You need a mine map to start sketching!")
                             else:
@@ -1330,11 +1330,11 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                             Countdown(10)
                             printz(f"You climbed down the tree.")
                             wait(3)
-                            printz(f"You can now continue you are adventure.")
+                            printz(f"You can now continue your adventure.")
                     elif climb in COMMANDS["no"]:
                         printz(f"You decided to stop climbing and climb down.")
                         Countdown(10)
-                        printz(f"Oh, no! You slipped and fell down from the tree and hit you are head on a rock!.")
+                        printz(f"Oh, no! You slipped and fell down from the tree and hit your head on a rock!.")
                         wait(3)
                         player_stats["health"] -= 20
                         printz(f"You lost 20 hp from the fall and have {player_stats['health']} hp left!")
@@ -1343,7 +1343,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                             attrdict["death"][xy] = "You died by falling down from a tree."
                             Game_over()
                         else:
-                            printz(f"You can now continue you are adventure.")
+                            printz(f"You can now continue your adventure.")
                 else:
                     printz(f"You cant climb a {target}!")
             else:
@@ -1428,7 +1428,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                             print(" ")
                             if inputz("Why are you pressing yes all the time?>  ") in COMMANDS["yes"]:
                                 print(" ")
-                                printz(f"Fine you can have you are help,")
+                                printz(f"Fine you can have your help,")
                                 wait(4)
                                 if inputz("But are you totally sure?>  ") in COMMANDS["yes"]:
                                     if inputz("Quite totally sure?>  ") in COMMANDS["yes"]:
@@ -1470,19 +1470,19 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                                         printz(f"Goodbye.                                                                                                                                                                                                                           ")
                                         wait(10)
                                     else:
-                                        printz(f"Okay, its you are loss!")
+                                        printz(f"Okay, its your loss!")
                                 else:
-                                    printz(f"Okay, its you are loss!")
+                                    printz(f"Okay, its your loss!")
                             else:
-                                printz(f"Okay, its you are loss!")
+                                printz(f"Okay, its your loss!")
                         else:
-                            printz(f"Okay, its you are loss!")
+                            printz(f"Okay, its your loss!")
                     else:
-                        printz(f"Okay, its you are loss!")
+                        printz(f"Okay, its your loss!")
                 else:
-                    printz(f"Okay, its you are loss!")
+                    printz(f"Okay, its your loss!")
             else:
-                printz(f"Okay, its you are loss!")
+                printz(f"Okay, its your loss!")
         
                 
         # INVENTORY command
@@ -1497,7 +1497,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                             printz(str(c)+": "+str(items[f][d][c]))
                             check += str(c)
             if check == "":
-                printz(f"you are inventory is empty!") 
+                printz(f"your inventory is empty!") 
 
 
         # WEAPONS command
@@ -1748,13 +1748,13 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                 delete = inputz("Delete acount? (y/n)>  ")
                 if delete in COMMANDS["yes"]:
                     del data[username]
-                    printz(f"you are acount has been deleted.")
+                    printz(f"your acount has been deleted.")
                     printz(f"Exiting...")
                     json_dump(data)
                     exit_event.set()
                     os._exit(0)
                 elif delete in COMMANDS["no"]:
-                    printz(f"You decided not to delete you are acount.")
+                    printz(f"You decided not to delete your acount.")
                     break
                 else:
                     printz(f"Invalid input. Please enter 'y' or 'n'.")
@@ -1772,7 +1772,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
             elif enter == 8:
                 printz(f"You press enter 4 times! You die.")
                 wait(4)
-                printz(f"you are user has been deleted.")
+                printz(f"your user has been deleted.")
                 wait(3)
                 printz(f"Dont press enter next time!")
                 printz(f"Exiting...")
@@ -1786,7 +1786,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                 print(" ")
                 printz(f"Ha ha, you fell for it didn't you!")
                 wait(2)
-                printz(f"you are user has not been deleted.")
+                printz(f"your user has not been deleted.")
                 while True:
                     scared = input("Did i scare you? (y/n)>  ").lower().replace(" ","")
                     if scared in COMMANDS["yes"]:
@@ -1852,12 +1852,12 @@ def print_position(x,y,flag,data,username):
                 FIGHT(giant_spider())
         
         if "cant_move" in attrdict["attr"]:
-            printz(f"You are unable to move because of hunger.")
+            printz(f"Your unable to move because of hunger.")
             printz(position)
             return x,y,lastxy,True
         
         elif "move_slowly" in attrdict["attr"]:
-            printz(f"You are moving slowly because of hunger.")
+            printz(f"Your moving slowly because of hunger.")
             wait(2)
             printz(f"Wait until the countdown finishes.")
             i = random.randint(10,20)
@@ -1866,7 +1866,7 @@ def print_position(x,y,flag,data,username):
 
 
         if position[16:21] == "dit"+"ch":
-            printz(f"you are walking back out of the slippery dit"+"ch. This takes time!")
+            printz(f"You are walking back out of the slippery dit"+"ch. This takes time!")
             wait(2)
             printz(f"Wait until the countdown finishes.")
             i = random.randint(10,20)
@@ -1931,12 +1931,12 @@ def print_position(x,y,flag,data,username):
                                 print(" ")
                                 printz(f"Oh, no. You did not see the ledge in the mist and fell down 10 meters.")
                                 wait(2)
-                                printz(f"You are unable to move you are legs, but wait for the mist to go away.")
+                                printz(f"You are unable to move your legs, but wait for the mist to go away.")
                                 Countdown(15)
                                 print(" ")
-                                printz(f"You died from infection in you are legs.")
+                                printz(f"You died from infection in your legs.")
                                 printz(f"Dont fall off the ledge next time!")
-                                attrdict["death"][xy] = "You died from infection in you are legs."
+                                attrdict["death"][xy] = "You died from infection in your legs."
                                 Game_over()
                             elif climb in COMMANDS["right"]:
                                 printz(f"You decided to go right.")
@@ -2033,7 +2033,7 @@ def print_position(x,y,flag,data,username):
                 else:
                     print(" ")
                     if xy == "-7,1" and "moved_mine_rocks" not in attrdict["attr"]:
-                        printz("you are standing in a clearing with woods all around. In front of you is a hole going down into the ground supported by wooden beams.")
+                        printz("You are standing in a clearing with woods all around. In front of you is a hole going down into the ground supported by wooden beams.")
                     else:
                         printz(position)
         else:
@@ -2146,12 +2146,12 @@ def Tick_update():
         if s < 1:
             for f in range(key_len):
                 save_key += random.choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
-            print(f"Error line() {line()}: Game terminated without reason. Use the following save key to restore you are account: {save_key}")
+            print(f"Error line() {line()}: Game terminated without reason. Use the following save key to restore your account: {save_key}")
 
             data = json_load()
             if username in data:
                 if "admin" in data[username]["attrdict"]["attr"]:
-                    print("As an admin you have been spared from the punishment of having you are acount reset. If you read this message, a problem with the watcher has occurred. Please report this to the creator of the game so it can be fixed. Thank you!")
+                    print("As an admin you have been spared from the punishment of having your acount reset. If you read this message, a problem with the watcher has occurred. Please report this to the creator of the game so it can be fixed. Thank you!")
                     os._exit(0)
                 # save acount if watcher terminates game without reason
                 data[username]["save_key"] = {"key":save_key,"data":data[username].copy()}
@@ -2281,10 +2281,10 @@ def Update():
         attrdict["death"][xy] = "You died of dehydration"
         Game_over()
     elif player_stats["thirst"] <= 15:
-        printz("You are so extreamly dehydrated you lost you are sight!")
+        printz("You are so extreamly dehydrated you lost your sight!")
         attrdict["attr"].append("blind")
     elif player_stats["thirst"] <= 25:
-        printz("You are very dehydrated and start to lose you are sight because of it.")
+        printz("You are very dehydrated and start to lose your sight because of it.")
         try:
             attrdict["attr"].remove("blind")
             printz("You are not extreamly dehydrated anymore and can now see again.")
@@ -2360,20 +2360,20 @@ while True:
         
 
     if loginorcreate in COMMANDS["yes"]:
-        username = inputz("Type you are username: ").lower().replace(" ","")
+        username = inputz("Type your username: ").lower().replace(" ","")
         if username in data:
-            password = inputz("Type you are password: ").lower().replace(" ","")
+            password = inputz("Type your password: ").lower().replace(" ","")
             if data[username]["password"] != password:
                 print("Incorrect password for user",username)
                 continue
             elif data[username]["password"] == password:
                 if "reset1" in data[username]["attrdict"]["attr"]:
                     print(" ")
-                    printz(f"Not so much welcome back you dirty little cheater! you are acount has been reset as a punishment for trying to cheat by terminating the watcher! Did you really think you could get away with it? You should be ashamed of you areself! Dont do it again, i will not allow it!")
+                    printz(f"Not so much welcome back you dirty little cheater! your acount has been reset as a punishment for trying to cheat by terminating the watcher! Did you really think you could get away with it? You should be ashamed of yourself! Dont do it again, i will not allow it!")
                     del data[username]["attrdict"]["attr"][data[username]["attrdict"]["attr"].index("reset1")]
                 elif "reset2" in data[username]["attrdict"]["attr"]:
                     print(" ")
-                    printz(f"You terminated you are terminal without using the proper exit command! I am sorry but you are acount has been reset because of it. Make sure you dont do it again!")
+                    printz(f"You terminated your terminal without using the proper exit command! I am sorry but your acount has been reset because of it. Make sure you dont do it again!")
                     del data[username]["attrdict"]["attr"][data[username]["attrdict"]["attr"].index("reset2")]
                 if username == "z":
                     print(" ")
@@ -2409,13 +2409,13 @@ while True:
             elif username == "ois":
                     attrdict["attr"].append("a")
             print(" ")
-            printz(f"IMPORTANT - turning off terminal without using the proper exit command will delete you are acount!")
+            printz(f"IMPORTANT - turning off terminal without using the proper exit command will delete your acount!")
             print(" ")
-            printz(f"You are standing on a road, with a forest to the west and fields to the east.")
+            printz(f"Your standing on a road, with a forest to the west and fields to the east.")
             printz(f"The road bends a few kilometers ahead. Beside lies a lake that is partially obscured by a hill.")
             printz(f"The dit"+"ch on the side of the road is very wet and muddy.")
             print(" ")
-            printz(f"A car drives past and a letter tied to a starter food pack flies off and lands by you are feet.")
+            printz(f"A car drives past and a letter tied to a starter food pack flies off and lands by your feet.")
             printz(f"On the letter it says 'Welcome to Zarckary'.")
             print(" ") 
             player_stats["start_time"] = datetime.now().isoformat()
@@ -2428,7 +2428,7 @@ while True:
         print("Invalid input, type yes or no")
 
 
-LETTER = ["IMPORTANT - turning off terminal without using the proper exit command will delete you are acount!"," ","Welcome to Zarckary " + username + "! a insanely irritating version of Zork."," ","Firstly some background information. Zarckary is a spinoff from zork.","Up through the times it has gone all the way from its original name 'Zark',","to Zarck and eventually to Zarckary because of some amazing input from my mom.","As this is a spinoff from Zork i have to name the original creators of Zork,","so a big thanks to Tim Anderson, Marc Blank, Bruce Daniels, and Dave Lebling. Back to the explanation"," ","I can guarantee that you will get VERY ANNOYED!","Programmed by Zackary."," "," ","A mysterious text-based adventure awaits you...", "Navigate the world using directional commands and explore what lies beyond.", "Be careful where you venture - not all places are welcoming to travelers.", "", "Pay close attention to you are surroundings and the descriptions of each location.", "They often hold clues about what dangers or treasures await nearby.", "Some discoveries can only be made through careful exploration and experimentation.", "", "The world is full of surprises - dense forests hide secrets, abandoned structures conceal mysteries.", "Rumors speak of old mines deep within the mountains and woods where forgotten treasures may still rest.", "But venture there at you are own peril - danger lurks in the darkness below.", "", "you are actions have consequences - choose wisely and think before you act!", "If you find you areself in a difficult situation, stay calm and remember: quick reflexes can save you are life.", "", "Secrets are hidden throughout the game - will you find them all?", "Good luck, adventurer. May you are journey through Zarckary be memorable and brave..."," "]
+LETTER = ["IMPORTANT - turning off terminal without using the proper exit command will delete your acount!"," ","Welcome to Zarckary " + username + "! a insanely irritating version of Zork."," ","Firstly some background information. Zarckary is a spinoff from zork.","Up through the times it has gone all the way from its original name 'Zark',","to Zarck and eventually to Zarckary because of some amazing input from my mom.","As this is a spinoff from Zork i have to name the original creators of Zork,","so a big thanks to Tim Anderson, Marc Blank, Bruce Daniels, and Dave Lebling. Back to the explanation"," ","I can guarantee that you will get VERY ANNOYED!","Programmed by Zackary."," "," ","A mysterious text-based adventure awaits you...", "Navigate the world using directional commands and explore what lies beyond.", "Be careful where you venture - not all places are welcoming to travelers.", "", "Pay close attention to you are surroundings and the descriptions of each location.", "They often hold clues about what dangers or treasures await nearby.", "Some discoveries can only be made through careful exploration and experimentation.", "", "The world is full of surprises - dense forests hide secrets, abandoned structures conceal mysteries.", "Rumors speak of old mines deep within the mountains and woods where forgotten treasures may still rest.", "But venture there at you are own peril - danger lurks in the darkness below.", "", "you are actions have consequences - choose wisely and think before you act!", "If you find you areself in a difficult situation, stay calm and remember: quick reflexes can save you are life.", "", "Secrets are hidden throughout the game - will you find them all?", "Good luck, adventurer. May you are journey through Zarckary be memorable and brave..."," "]
 
 
 # Start alive
