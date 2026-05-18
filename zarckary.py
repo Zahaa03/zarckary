@@ -13,6 +13,7 @@ from datetime import datetime
 import threading
 import inspect
 from threading import Event
+import re
 
 HEARTBEAT_FILE = "tick.json"
 
@@ -26,6 +27,317 @@ global attrdict
 
 TYPE_SPEED = 0.02
 JSON_ENCODED = False
+JSON_ENCODED_KEY = "zarckary"
+
+
+COMMON_SUFFIXES = (
+    "ingly", "edly", "iness", "ments", "ment", "ness", "less", "iest",
+    "iers", "ier", "ies", "ied", "ing", "ers", "est", "ful", "ly",
+    "er", "ed", "es", "s",
+)
+
+WORDS = {
+    "mean": {
+        "words": [
+            "hate", "idiotic", "worst", "dumb", "irritating", "annoying", "stupid",
+            "rude", "cruel", "nasty", "mean", "awful", "terrible", "useless",
+            "hostile", "insulting", "selfish", "bratty", "disrespectful", "hurtful",
+            "bitter", "offensive", "rotten", "obnoxious", "unkind",
+        ],
+        "phrases": [
+            "Let's keep the conversation respectful.",
+            "That sounded a little harsh.",
+            "Please choose kinder words.",
+            "Let's try a more respectful tone.",
+            "We can say that more nicely.",
+            "Kind words work better here.",
+            "Please keep it friendly.",
+            "That message feels hurtful.",
+            "Let's slow down and be respectful.",
+            "I'd rather keep this positive.",
+            "Let's avoid insulting language.",
+            "Please speak with kindness.",
+            "That came across as mean.",
+            "Let's make this conversation safer.",
+            "Try saying that in a calmer way.",
+            "Respect goes a long way.",
+            "Let's not tear people down.",
+            "Please keep the tone polite.",
+            "That wording is a bit rough.",
+            "Let's aim for kindness instead.",
+            "Maybe rephrase that more gently.",
+            "Harsh words can hurt people.",
+            "Let's be civil with each other.",
+            "Friendly language helps more.",
+            "Please avoid hurtful comments.",
+            "We can disagree without being rude.",
+            "Let's keep things thoughtful.",
+            "That sounds disrespectful.",
+            "Try a kinder response.",
+            "Let's reset and speak calmly.",
+            "Please keep this welcoming.",
+            "That feels unnecessarily mean.",
+            "Let's use considerate words.",
+            "A gentler tone would help.",
+            "Please be mindful of others.",
+            "Let's keep the energy positive.",
+            "That comment could be kinder.",
+            "We can do better than insults.",
+            "Please keep the chat respectful.",
+            "Let's focus on helpful words.",
+            "That was not very kind.",
+            "Let's leave out the insults.",
+            "Please keep your response polite.",
+            "Let's make room for respect.",
+            "That tone may upset someone.",
+            "Try speaking with more care.",
+            "Let's keep things encouraging.",
+            "A respectful reply would be better.",
+            "Please avoid personal attacks.",
+            "Let's keep it kind and calm.",
+        ],
+    },
+    "nice": {
+        "words": [
+            "kind", "awesome", "best", "smart", "helpful", "amazing", "wonderful",
+            "caring", "sweet", "friendly", "polite", "generous", "thoughtful", "lovely",
+            "great", "fantastic", "brilliant", "excellent", "supportive", "patient",
+            "cheerful", "honest", "warm", "gentle", "respectful",
+        ],
+        "phrases": [
+            "That's really kind of you.",
+            "I appreciate that positive energy.",
+            "That was a thoughtful thing to say.",
+            "You're bringing a great vibe.",
+            "That message was really uplifting.",
+            "Thanks for being so considerate.",
+            "That was genuinely sweet.",
+            "I love the kindness in that.",
+            "That's a wonderful response.",
+            "You made that sound very encouraging.",
+            "That was nice to hear.",
+            "Your words are appreciated.",
+            "That was a very supportive comment.",
+            "You handled that kindly.",
+            "That was full of warmth.",
+            "Thanks for saying something positive.",
+            "That was really respectful.",
+            "You sound very thoughtful.",
+            "That kind tone stands out.",
+            "You're making this conversation better.",
+            "That was a lovely thing to say.",
+            "Your kindness is showing.",
+            "That felt encouraging.",
+            "Thanks for being uplifting.",
+            "That was such a good-hearted comment.",
+            "You're being very considerate.",
+            "That response was full of grace.",
+            "You made that sound really positive.",
+            "That's the kind of energy I like.",
+            "That was friendly and kind.",
+            "You're adding something good here.",
+            "That sounded generous and warm.",
+            "Thanks for keeping it positive.",
+            "That was an excellent response.",
+            "You said that with a lot of care.",
+            "That was beautifully supportive.",
+            "I appreciate the kindness in that message.",
+            "That was very encouraging.",
+            "You're speaking with real respect.",
+            "That came across as genuinely nice.",
+            "Thank you for the thoughtful words.",
+            "That was a bright and cheerful message.",
+            "You made that feel welcoming.",
+            "That was kind in the best way.",
+            "I appreciate your positive tone.",
+            "That was a graceful response.",
+            "You brought real warmth to the chat.",
+            "That message felt supportive.",
+            "Thanks for being so uplifting.",
+            "That was wonderfully kind.",
+        ],
+    },
+    "funny": {
+        "words": [
+            "joke", "funny", "hilarious", "laugh", "comedy", "humor", "witty",
+            "silly", "goofy", "pun", "giggle", "chuckle", "amusing", "playful",
+            "clown", "meme", "prank", "comedian", "banter", "quirky", "ridiculous",
+            "snicker", "jest", "gags", "joker",
+        ],
+        "phrases": [
+            "That got a laugh out of me.",
+            "Okay, that was funny.",
+            "You nailed the joke there.",
+            "That had great comedic timing.",
+            "That was genuinely hilarious.",
+            "I can see the humor in that.",
+            "That's a solid joke.",
+            "That was a playful comment.",
+            "You brought some fun into this.",
+            "That was a clever one.",
+            "Nice, that was witty.",
+            "That joke landed well.",
+            "That definitely lightened the mood.",
+            "You have good comedic instincts.",
+            "That was silly in a good way.",
+            "I wasn't expecting that punchline.",
+            "That was surprisingly funny.",
+            "You slipped humor in nicely.",
+            "That's the kind of joke that works.",
+            "That made the conversation more fun.",
+            "You have a fun sense of humor.",
+            "That line was amusing.",
+            "That was delightfully goofy.",
+            "You turned that into a laugh.",
+            "That was comedy gold.",
+            "I like the humor in that response.",
+            "That was a good bit.",
+            "You made that moment entertaining.",
+            "That joke had some spark.",
+            "That gave the chat some personality.",
+            "That was light and funny.",
+            "You really played that well.",
+            "That was a nice little punchline.",
+            "You made that more amusing.",
+            "That comment was full of humor.",
+            "That was a clever twist.",
+            "I like how playful that sounded.",
+            "That joke was well placed.",
+            "You gave that some real charm.",
+            "That was a fun response.",
+            "You know how to make it entertaining.",
+            "That was unexpectedly witty.",
+            "That line had good energy.",
+            "You made that pretty memorable.",
+            "That was laugh-worthy.",
+            "You delivered a strong joke there.",
+            "That had a good sense of fun.",
+            "You turned that into a funny moment.",
+            "That was nicely comedic.",
+            "That one definitely worked.",
+        ],
+    },
+    "sad": {
+        "words": [
+            "sad", "unhappy", "depressed", "cry", "tears", "lonely", "heartbroken",
+            "upset", "miserable", "gloomy", "down", "sorrow", "grief", "hopeless",
+            "tired", "hurt", "abandoned", "blue", "crushed", "defeated",
+            "disappointed", "stressed", "anxious", "withdrawn", "broken",
+        ],
+        "phrases": [
+            "I'm here with you.",
+            "That sounds really heavy.",
+            "I'm sorry you're feeling this way.",
+            "You don't have to carry that alone.",
+            "It's okay to have hard days.",
+            "That sounds painful.",
+            "I hope things ease up soon.",
+            "Please be gentle with yourself.",
+            "What you're feeling matters.",
+            "You deserve support.",
+            "I'm sorry that hurts.",
+            "It's okay to pause and breathe.",
+            "That sounds exhausting.",
+            "You are not alone in this.",
+            "Take things one step at a time.",
+            "I hope you get some comfort today.",
+            "Your feelings are valid.",
+            "It's understandable to feel low sometimes.",
+            "I'm sorry things feel rough right now.",
+            "You matter, even on difficult days.",
+            "Please give yourself some care.",
+            "That sounds deeply disappointing.",
+            "It's okay to reach out for help.",
+            "I hope tomorrow feels lighter.",
+            "You deserve kindness right now.",
+            "That sounds really lonely.",
+            "I'm sorry you're dealing with that.",
+            "Take your time getting through this.",
+            "You don't need to rush feeling better.",
+            "I hope you can rest a little.",
+            "Even small steps count.",
+            "It makes sense that you're hurting.",
+            "Please remember to be patient with yourself.",
+            "Hard moments can take time.",
+            "I hear the sadness in that.",
+            "You deserve compassion.",
+            "I hope something good reaches you today.",
+            "You're allowed to feel what you feel.",
+            "That sounds really discouraging.",
+            "I'm sorry this has been so hard.",
+            "Please take care of yourself.",
+            "I hope you find a little peace soon.",
+            "It's okay to lean on support.",
+            "This sounds like a tough moment.",
+            "You're still important through all of this.",
+            "I hope things soften with time.",
+            "That kind of hurt can be a lot.",
+            "You deserve understanding.",
+            "Please keep going one moment at a time.",
+            "I'm sending a little encouragement your way.",
+        ],
+    },
+    "angry": {
+        "words": [
+            "angry", "mad", "furious", "rage", "irritated", "annoyed", "upset",
+            "bitter", "heated", "frustrated", "resentful", "hostile", "aggressive",
+            "grumpy", "offended", "outraged", "livid", "cross", "stormy", "fuming",
+            "tense", "snappy", "sharp", "cranky", "seething",
+        ],
+        "phrases": [
+            "Let's take a breath first.",
+            "That sounds really frustrating.",
+            "I can tell you're upset.",
+            "Let's slow the moment down.",
+            "A calmer tone might help here.",
+            "Try taking a pause before replying.",
+            "That sounds heated.",
+            "Let's keep this steady.",
+            "You seem really frustrated right now.",
+            "It may help to step back for a second.",
+            "Let's not let this escalate.",
+            "Try a deep breath and a reset.",
+            "That sounds intense.",
+            "Let's work through it calmly.",
+            "It's okay to be upset, but let's stay respectful.",
+            "Maybe take a short pause.",
+            "That feels like a strong reaction.",
+            "Let's bring the temperature down.",
+            "Try putting that a little more calmly.",
+            "Let's keep the response measured.",
+            "You sound really annoyed.",
+            "A little distance might help.",
+            "Let's slow things down before continuing.",
+            "That sounds like a frustrating situation.",
+            "Let's stay in control of the tone.",
+            "It might help to respond after a pause.",
+            "That's a lot of anger at once.",
+            "Let's aim for calm words.",
+            "You can be honest without exploding.",
+            "Try to keep it grounded.",
+            "That frustration is coming through clearly.",
+            "Let's turn that into a calmer response.",
+            "A quieter approach may work better.",
+            "Let's not add more heat to this.",
+            "Take a second and reset.",
+            "That sounds really aggravating.",
+            "Let's keep things constructive.",
+            "You sound close to boiling over.",
+            "A calm reply might help more.",
+            "Let's keep this from becoming harsher.",
+            "You can say that with less force.",
+            "That message feels tense.",
+            "Let's make space for a calmer answer.",
+            "Try easing the tone a little.",
+            "That seems like a high-stress moment.",
+            "Let's aim for control instead of reaction.",
+            "It may help to cool off first.",
+            "That irritation is understandable.",
+            "Let's keep your next words deliberate.",
+            "Pause, breathe, then answer.",
+        ],
+    },
+}
 
 ENEMY_SPAWN_CHANCE = {
     "fields": [250.5,3000.5],
@@ -37,6 +349,550 @@ ENEMY_SPAWN_CHANCE = {
     "road": [1200.5,9000.5],
 }
 
+RANDOM_FEEDBACK = [
+  "Sorry, I don't understand. Could you repeat that?",
+  "What did you say?",
+  "I don't understand you.",
+  "Could you say that again?",
+  "I didn't catch that—can you repeat it?",
+  "I'm not sure I understood. Can you rephrase?",
+  "Can you repeat that, please?",
+  "I didn't understand that. Could you reword it?",
+  "Sorry, could you clarify what you mean?",
+  "I'm confused—could you explain that differently?",
+  "That didn't make sense to me. Can you rephrase?",
+  "I'm not following. Could you try saying it another way?",
+  "Could you restate that?",
+  "Please rephrase that for me.",
+  "Can you say that in a different way?",
+  "I didn't quite get it. Can you clarify?",
+  "I'm not sure what you mean. Could you elaborate?",
+  "Sorry, I missed that. Can you repeat?",
+  "Could you try again? I didn't understand.",
+  "I'm having trouble understanding—can you rephrase?",
+  "I'm not sure I heard you correctly. Can you repeat?",
+  "I don't get it. Could you say that differently?",
+  "Sorry, can you say that again more clearly?",
+  "Can you repeat what you just said?",
+  "I'm not understanding. Can you rephrase your question?",
+  "Could you clarify your request?",
+  "Sorry—what do you mean by that?",
+  "I'm not sure what you're asking. Can you rephrase?",
+  "I didn't understand your message. Can you try again?",
+  "Could you say that again in simpler terms?",
+  "I'm not sure I follow. Can you restate it?",
+  "That's unclear to me. Could you clarify?",
+  "I'm not certain what you mean. Can you explain?",
+  "I didn't catch your meaning. Could you rephrase?",
+  "Sorry, I'm not following you. Can you try again?",
+  "Can you clarify that a bit?",
+  "I'm not sure I understand what you're saying.",
+  "I don't understand—could you explain it another way?",
+  "Could you repeat the last part?",
+  "I didn't understand that statement. Can you rephrase?",
+  "Sorry, I'm lost. Could you restate your point?",
+  "I'm not sure what that means. Can you clarify?",
+  "Can you reword that for me?",
+  "I didn't get that. Could you repeat it, please?",
+  "Sorry, could you say that again?",
+  "I'm not sure I understood correctly. Could you rephrase?",
+  "I don't quite understand. Can you clarify?",
+  "Could you repeat your question?",
+  "I'm not following—could you rephrase?",
+  "That wasn't clear to me. Can you reword it?",
+  "I'm having difficulty understanding. Can you try again?",
+  "Sorry, I don't understand what you mean.",
+  "Can you say that again with more detail?",
+  "I didn't understand. Could you explain more clearly?",
+  "Could you rephrase that in a simpler way?",
+  "I'm not sure what you're trying to say. Can you rephrase?",
+  "Sorry, I didn't get your request. Can you repeat it?",
+  "I don't understand that. Could you clarify your intent?",
+  "Can you rephrase your message for clarity?",
+  "I'm confused. Could you restate that?",
+  "I'm not sure I understand your question.",
+  "Sorry, what was that?",
+  "I didn't catch that. Can you say it again?",
+  "I'm not sure what you mean—could you clarify?",
+  "I don't understand. Can you rephrase it differently?",
+  "Can you repeat that more slowly?",
+  "I'm not following your meaning. Can you reword it?",
+  "I didn't understand the last message. Can you try again?",
+  "Sorry, could you clarify your question?",
+  "I'm not sure I understood—can you restate it?",
+  "I didn't get what you meant. Can you clarify?",
+  "Could you explain that again?",
+  "I'm not sure what you said. Can you repeat?",
+  "I don't understand. Can you provide more context?",
+  "Sorry, I'm not understanding this. Can you rephrase?",
+  "I didn't follow that. Can you reword it?",
+  "I'm not sure what you're referring to. Can you clarify?",
+  "Could you restate your request more clearly?",
+  "I'm confused by that. Could you explain it differently?",
+  "I don't understand your last message. Can you rephrase?",
+  "Sorry, could you try phrasing that another way?",
+  "I didn't understand. Can you say it again?",
+  "I'm not following. Can you repeat your request?",
+  "That's not clear to me. Can you clarify what you mean?",
+  "I'm not sure what you're asking for. Can you restate it?",
+  "Could you rephrase that question?",
+  "I'm not understanding. Could you elaborate a little?",
+  "Sorry, I didn't understand that. Could you clarify?",
+  "I'm not sure how to interpret that. Can you rephrase?",
+  "I didn't catch your point. Can you restate it?",
+  "Sorry, can you clarify what you want?",
+  "I'm not sure I understand the request. Can you rephrase?",
+  "I don't get it—could you reword your message?",
+  "Could you say that again using different words?",
+  "I'm not sure what you mean. Can you be more specific?",
+  "I didn't understand that. Could you provide an example?",
+  "Sorry, I'm not following. Could you clarify your message?",
+  "I don't understand. Can you restate it with more detail?",
+  "I'm not sure what you meant. Can you rephrase that?",
+  "Could you clarify what you're trying to do?",
+  "I'm confused—can you repeat your question?",
+  "I didn't quite understand that. Can you reword it?",
+  "Sorry, could you clarify what you're saying?",
+  "I'm not sure I understood. Can you rephrase your sentence?",
+  "I don't understand. Could you explain your point again?",
+  "Can you say that again in plain language?",
+  "I didn't catch that. Can you repeat the question?",
+  "Sorry, I didn't understand. Can you try again?",
+  "I'm not following. Could you restate your question?",
+  "That doesn't make sense to me. Can you clarify?",
+  "I'm not sure what you mean. Could you reword that?",
+  "I don't understand what you're asking. Can you rephrase?",
+  "Could you repeat that with a bit more clarity?",
+  "I didn't get that. Can you clarify your meaning?",
+  "Sorry, I'm still not understanding. Can you rephrase?",
+  "I'm not sure what you're saying. Can you restate it?",
+  "I don't understand. Could you please rephrase?",
+  "Could you clarify your last message?",
+  "I'm confused about that. Can you explain it differently?",
+  "I'm not sure I understand. Can you reword your request?",
+  "I didn't understand that. Can you repeat it more clearly?",
+  "Sorry, that's unclear. Can you rephrase?",
+  "I'm not following your question. Can you restate it?",
+  "I don't get it. Could you clarify what you mean?",
+  "Could you rephrase that so I can understand?",
+  "I'm not sure I understood the last part. Can you repeat it?",
+  "I didn't catch what you meant. Can you clarify?",
+  "Sorry, I'm not sure I understand your meaning.",
+  "I don't understand. Can you say it another way?",
+  "Could you clarify that request?",
+  "I'm confused—can you explain it in a different way?",
+  "I didn't understand that. Could you simplify it?",
+  "Sorry, I'm not sure what you mean by that.",
+  "I'm not following—could you clarify what you're asking?",
+  "I don't understand. Can you repeat with more details?",
+  "Could you restate what you want me to do?",
+  "I'm not sure what you're trying to say. Can you clarify?",
+  "I didn't get your point. Can you rephrase it?",
+  "Sorry, I didn't understand your question. Can you reword it?",
+  "I'm not sure I can interpret that. Can you clarify?",
+  "That's unclear. Could you please rephrase?",
+  "I don't understand—could you restate your message?",
+  "Sorry, can you clarify what you're asking me?",
+  "I'm not sure I understood. Could you repeat it?",
+  "I didn't catch that. Could you rephrase it?",
+  "I'm not understanding this. Can you explain it another way?",
+  "I don't get it. Can you reword that?",
+  "Could you clarify what you mean here?",
+  "I'm confused. Can you rephrase the question?",
+  "I didn't understand your intent. Can you clarify?",
+  "Sorry, I'm not sure I understand. Can you elaborate?",
+  "I'm not following. Can you explain with different wording?",
+  "I don't understand. Could you give me more context?",
+  "Could you restate your question more simply?",
+  "I'm not sure what you mean. Can you clarify the details?",
+  "I didn't quite get that. Can you say it again?",
+  "Sorry, can you rephrase your message?",
+  "I'm not sure I understood what you said. Can you repeat it?",
+  "I don't understand that. Can you clarify what you mean?",
+  "Could you reword that sentence?",
+  "I'm confused by your message. Can you restate it?",
+  "I didn't understand your last question. Can you rephrase?",
+  "Sorry, could you repeat that more clearly?",
+  "I'm not sure what you meant. Could you clarify it?",
+  "I don't understand. Can you restate what you're asking?",
+  "Could you clarify your request for me?",
+  "I'm not following your explanation. Can you rephrase?",
+  "I didn't understand that. Could you try again with different words?",
+  "Sorry, I'm not sure what you're saying. Can you clarify?",
+  "I'm not understanding your question. Can you restate it?",
+  "I don't get it. Can you explain it differently?",
+  "Could you clarify what you want exactly?",
+  "I'm confused—could you reword your request?",
+  "I didn't understand. Could you say that again, please?",
+  "Sorry, I'm not following. Can you repeat what you said?",
+  "I'm not sure I understand. Could you clarify your meaning?",
+  "I don't understand. Can you rephrase your question more clearly?",
+  "Could you repeat that, but in different words?",
+  "I'm not sure what you're asking. Can you clarify the question?",
+  "I didn't catch that. Can you rephrase the last message?",
+  "Sorry, I didn't understand your statement. Can you reword it?",
+  "I'm confused. Can you clarify what you mean?",
+  "I don't understand. Can you restate that in another way?",
+  "Could you clarify your last point?",
+  "I'm not sure I understood. Can you rephrase what you said?",
+  "I didn't get that. Could you explain it again?",
+  "Sorry, I'm not understanding. Can you clarify the request?",
+  "I'm not following. Could you say that again differently?",
+  "I don't understand your question. Could you restate it?",
+  "Could you clarify what you're trying to ask?",
+  "I'm confused—can you repeat your message?",
+  "I didn't understand that. Can you explain it in simpler terms?",
+  "Sorry, I'm not sure I understand. Could you rephrase your question?",
+  "I'm not following what you mean. Can you clarify it?",
+  "I don't get it. Could you clarify your message?",
+  "Could you reword that to make it clearer?",
+  "I'm not sure what you mean. Could you explain it again?",
+  "I didn't catch your question. Can you repeat it?",
+  "Sorry, I didn't understand. Can you clarify what you said?",
+  "I'm confused by that. Can you rephrase the statement?",
+  "I don't understand. Could you restate your request?",
+  "Could you clarify what you mean by that?",
+  "I'm not sure I follow. Can you rephrase your question?",
+  "I didn't understand your message. Could you clarify it?",
+  "Sorry, I'm not following. Can you explain it again?",
+  "I'm not sure what you're asking. Could you reword it?",
+  "I don't get it. Can you repeat that?",
+  "Could you clarify the question for me?",
+  "I'm confused. Can you restate it in other words?",
+  "I didn't understand. Can you provide more detail?",
+  "Sorry, I'm not sure what you mean. Can you clarify?",
+  "I'm not following. Can you restate your request more clearly?",
+  "I don't understand that. Could you rephrase your sentence?",
+  "Could you say that again, but more clearly?",
+  "I'm not sure I got it. Can you clarify what you mean?",
+  "I didn't understand. Could you explain what you mean?",
+  "Sorry, I'm confused. Can you reword your message?",
+  "I'm not sure I understand. Can you restate the question?",
+  "I don't understand. Could you repeat your last message?",
+  "Could you clarify what you're referring to?",
+  "I'm confused—could you explain that again?",
+  "I didn't understand that. Can you rephrase your request?",
+  "Sorry, I didn't get that. Can you clarify?",
+  "I'm not sure what you mean. Can you restate it clearly?",
+  "I don't understand. Can you reword the question?",
+  "Could you clarify what you want me to answer?",
+  "I'm confused. Can you rephrase what you said?",
+  "I didn't catch that. Could you repeat it again?",
+  "Sorry, can you clarify your meaning?",
+  "I'm not following. Could you reword it in simpler terms?",
+  "I don't understand. Could you please clarify?",
+  "Could you repeat your request, please?",
+  "I'm not sure I understand what you mean. Can you restate it?",
+  "I didn't understand your question. Can you clarify what you mean?",
+  "Sorry, I'm not sure what you're asking. Could you rephrase?",
+  "I'm confused by that. Could you restate it?",
+  "I don't get what you mean. Can you clarify?",
+  "Could you clarify your question a bit more?",
+  "I'm not sure I understood. Could you explain with different words?",
+  "I didn't catch your meaning. Can you clarify it?",
+  "Sorry, I'm not following your request. Can you rephrase?",
+  "I'm not sure what you mean. Can you explain it more clearly?",
+  "I don't understand. Could you rephrase your last message?",
+  "Could you clarify what you're asking me to do?",
+  "I'm confused—can you rephrase the question?",
+  "I didn't understand that. Could you clarify your point?",
+  "Sorry, I'm not sure I understand your message.",
+  "I'm not following. Can you repeat your question more clearly?",
+  "I don't understand. Can you restate it with more context?",
+  "Could you clarify what you mean in your last message?",
+  "I'm confused. Can you reword the request?",
+  "I didn't catch what you meant. Can you restate it?",
+  "Sorry, I don't understand. Can you say it another way?",
+  "I'm not sure what you're saying. Could you clarify your question?",
+  "I don't understand. Can you repeat it in different words?",
+  "Could you clarify the last thing you said?",
+  "I'm confused—can you explain your question differently?",
+  "I didn't understand. Can you clarify what you mean by that statement?",
+  "Sorry, I'm not sure I follow. Could you restate it?",
+  "I'm not following. Can you clarify your request?",
+  "I don't understand. Can you explain in a different way?",
+  "Could you rephrase that more clearly?",
+  "I'm confused. Could you clarify the details?",
+  "I didn't understand your message. Can you repeat it more clearly?",
+  "Sorry, could you rephrase that?",
+  "I'm not sure what you mean. Can you clarify what you want?",
+  "I don't get it. Can you restate your question?",
+  "Could you clarify the intent of your message?",
+  "I'm confused—can you reword that?",
+  "I didn't understand. Could you repeat your request?",
+  "Sorry, I'm not following. Can you clarify what you mean?",
+  "I'm not sure I understood. Can you explain it another way?",
+  "I don't understand. Can you clarify your last request?",
+  "Could you restate that question for me?",
+  "I'm confused. Could you rephrase that sentence?",
+  "I didn't get it. Can you explain what you mean?",
+  "Sorry, I'm not sure what you mean. Could you clarify it?",
+  "I'm not following. Can you clarify what you're asking?",
+  "I don't understand. Could you reword that for clarity?",
+  "Could you repeat the message in simpler words?",
+  "I'm confused—could you clarify your request?",
+  "I didn't understand your question. Could you rephrase it?",
+  "Sorry, can you restate what you said?",
+  "I'm not sure I understand. Could you clarify your request in detail?",
+  "I don't understand. Can you rephrase the question again?",
+  "Could you clarify what you're trying to communicate?",
+  "I'm confused. Can you reword your question?",
+  "I didn't catch that. Could you clarify your meaning?",
+  "Sorry, I'm not following. Can you restate your point?",
+  "I'm not sure what you mean. Can you clarify what you're asking?",
+  "I don't understand. Could you explain more clearly?",
+  "Could you rephrase that statement for me?",
+  "I'm confused—can you restate it more clearly?",
+  "I didn't understand. Could you clarify the question?",
+  "Sorry, I'm not sure I understand your request.",
+  "I'm not following. Could you clarify what you want to know?",
+  "I don't understand. Can you rephrase your question in simpler terms?",
+  "Could you restate the last message you sent?",
+  "I'm confused. Could you clarify your statement?",
+  "I didn't understand that. Can you reword the question?",
+  "Sorry, could you explain what you mean by that?",
+  "I'm not sure I understand. Could you rephrase what you're asking?",
+  "I don't get it. Could you restate your request more clearly?",
+  "Could you clarify what you mean, please?",
+  "I'm confused—can you rephrase your last message?",
+  "I didn't catch that. Can you restate the question?",
+  "Sorry, I didn't understand. Could you clarify what you mean?",
+  "I'm not sure what you're asking. Can you explain it differently?",
+  "I don't understand. Could you restate your question with more detail?",
+  "Could you clarify your last message a bit?",
+  "I'm confused. Can you reword what you said?",
+  "I didn't understand. Could you try explaining it another way?",
+  "Sorry, I'm not following. Could you rephrase what you want?",
+  "I'm not sure I understand what you're trying to ask.",
+  "I don't understand. Can you clarify what you mean exactly?",
+  "Could you repeat that in a clearer way?",
+  "I'm confused—could you clarify your question?",
+  "I didn't get it. Can you rephrase your message?",
+  "Sorry, I'm not sure what you mean. Can you restate it?",
+  "I'm not following. Could you reword that?",
+  "I don't understand. Could you restate it in simpler terms?",
+  "Could you clarify the meaning of your message?",
+  "I'm confused. Can you repeat your question?",
+  "I didn't understand. Could you clarify what you're referring to?",
+  "Sorry, could you rephrase your request more clearly?",
+  "I'm not sure I understand. Can you clarify your last point?",
+  "I don't get what you mean. Can you reword it?",
+  "Could you clarify your question, please?",
+  "I'm confused—can you explain it another way?",
+  "I didn't catch that. Could you rephrase your last message?",
+  "Sorry, I didn't understand. Could you repeat the question?",
+  "I'm not sure what you mean. Could you clarify your statement?",
+  "I don't understand. Can you reword the request for me?",
+  "Could you clarify what you're asking in your message?",
+  "I'm confused. Could you restate that message?",
+  "I didn't understand. Can you clarify what you want me to do?",
+  "Sorry, I'm not sure what you mean. Could you explain again?",
+  "I'm not following. Can you rephrase your question for me?",
+  "I don't get it. Could you clarify your last message?",
+  "Could you rephrase that so it's easier to understand?",
+  "I'm confused—could you clarify what you're saying?",
+  "I didn't understand your question. Can you restate it?",
+  "Sorry, can you clarify what you mean in simpler terms?",
+  "I'm not sure what you mean. Can you clarify your request?",
+  "I don't understand. Could you restate your message in other words?",
+  "Could you clarify what you're asking about?",
+  "I'm confused. Could you repeat that again?",
+  "I didn't catch the meaning. Can you clarify?",
+  "Sorry, I'm not following. Can you reword your statement?",
+  "I'm not sure I understand. Could you clarify with an example?",
+  "I don't understand. Could you rephrase your question one more time?",
+  "Could you clarify your intent here?",
+  "I'm confused—can you restate your request?",
+  "I didn't understand. Can you explain more simply?",
+  "Sorry, could you clarify your message again?",
+  "I'm not following. Could you rephrase your question in another way?",
+  "I don't get what you mean. Could you clarify the request?",
+  "Could you clarify what you mean by your last message?",
+  "I'm confused. Could you reword that more clearly?",
+  "I didn't understand. Can you restate your question differently?",
+  "Sorry, I'm not sure what you're asking. Can you clarify it?",
+  "I'm not sure I understand. Could you repeat that?",
+  "I don't understand. Could you clarify the details of your question?",
+  "Could you clarify your message so I can help?",
+  "I'm confused—can you explain that again in different words?",
+  "I didn't catch that. Could you restate it clearly?",
+  "Sorry, I didn't understand. Could you rephrase your request?",
+  "I'm not following. Can you clarify what you mean by that?",
+  "I don't get it. Could you reword your question for clarity?",
+  "Could you clarify what you're trying to say in that message?",
+  "I'm confused. Could you clarify what you mean?",
+  "I didn't understand your point. Can you rephrase it?",
+  "Sorry, I'm not sure I understand. Can you restate it another way?",
+  "I'm not following. Could you clarify your last request?",
+  "I don't understand. Could you explain it again more clearly?",
+  "Could you clarify what you're asking me?",
+  "I'm confused—could you rephrase the question in simpler terms?",
+  "I didn't understand that. Could you clarify your question again?",
+  "Sorry, can you restate your message in other words?",
+  "I'm not sure I understand. Can you clarify with more detail?",
+  "I don't understand. Could you rephrase what you're saying?",
+  "Could you clarify what you mean by that phrase?",
+  "I'm confused. Can you restate your question more clearly?",
+  "I didn't catch that. Can you clarify what you mean?",
+  "Sorry, I didn't understand. Could you reword it?",
+  "I'm not following. Could you clarify the question again?",
+  "I don't get it. Could you explain what you mean again?",
+  "Could you clarify the request in your message?",
+  "I'm confused—can you rephrase your statement?",
+  "I didn't understand. Can you clarify your question more clearly?",
+  "Sorry, I'm not sure what you mean. Could you restate it clearly?",
+  "I'm not following. Can you clarify what you're saying?",
+  "I don't understand. Could you rephrase your request in a simpler way?",
+  "Could you clarify your last question?",
+  "I'm confused. Could you clarify what you want me to do?",
+  "I didn't understand. Could you restate your request clearly?",
+  "Sorry, could you rephrase your question again?",
+  "I'm not sure I understand. Can you clarify what you mean by that?",
+  "I don't understand. Can you restate it in simpler words?",
+  "Could you clarify the question you're asking?",
+  "I'm confused—can you repeat that more clearly?",
+  "I didn't catch that. Could you clarify what you're asking?",
+  "Sorry, I didn't understand. Can you rephrase your message more clearly?",
+  "I'm not following. Could you restate it with more clarity?",
+  "I don't get it. Can you clarify your intent?",
+  "Could you clarify what you mean in this context?",
+  "I'm confused. Can you rephrase your question one more time?",
+  "I didn't understand. Could you clarify the meaning?",
+  "Sorry, I'm not sure I understand your request. Can you rephrase?",
+  "I'm not following. Could you clarify your message again?",
+  "I don't understand. Could you explain again using different words?",
+  "Could you clarify what you mean by your question?",
+  "I'm confused—could you restate that more simply?",
+  "I didn't understand. Can you rephrase what you're asking?",
+  "Sorry, can you clarify what you meant by that?",
+  "I'm not sure I understand. Could you clarify the last message?",
+  "I don't understand. Can you restate what you want?",
+  "Could you clarify what you're requesting?",
+  "I'm confused. Could you reword your last message?",
+  "I didn't catch that. Can you explain it differently?",
+  "Sorry, I didn't understand your request. Could you clarify?",
+  "I'm not following. Could you restate your question more directly?",
+  "I don't get it. Could you clarify what you mean by that?",
+  "Could you clarify what you're saying, please?",
+  "I'm confused—can you rephrase that again?",
+  "I didn't understand. Can you clarify what you mean in your message?",
+  "Sorry, I'm not sure I understand. Could you explain it again?",
+  "I'm not following. Could you rephrase that more clearly?",
+  "I don't understand. Could you clarify what you meant?",
+  "Could you clarify your request so I can respond?",
+  "I'm confused. Can you restate your message clearly?",
+  "I didn't catch that. Could you clarify your question?",
+  "Sorry, I didn't understand. Can you restate it?",
+  "I'm not sure I understand. Could you rephrase the last part?",
+  "I don't get it. Could you clarify your question for me?",
+  "Could you clarify the message you sent?",
+  "I'm confused—can you reword what you said?",
+  "I didn't understand that. Could you clarify your request one more time?",
+  "Sorry, I'm not sure what you're asking. Can you restate it?",
+  "I'm not following. Could you clarify your meaning more clearly?",
+  "I don't understand. Can you rephrase your question differently?",
+  "Could you clarify what you mean by that request?",
+  "I'm confused. Could you restate it more clearly?",
+  "I didn't catch the point. Can you clarify it?",
+  "Sorry, I didn't understand. Could you reword the question?",
+  "I'm not sure I understand. Can you clarify what you're asking for?",
+  "I don't understand. Could you clarify your last message in more detail?",
+  "Could you clarify what you mean in plain terms?",
+  "I'm confused—could you rephrase that question?",
+  "I didn't understand. Can you restate what you mean?",
+  "Sorry, can you clarify what you're requesting?",
+  "I'm not following. Can you rephrase your question again?",
+  "I don't get it. Could you clarify what you're asking about?",
+  "Could you clarify the last statement you made?",
+  "I'm confused. Could you reword it with more context?",
+  "I didn't understand. Could you explain again more simply?",
+  "Sorry, I'm not sure I understand. Could you restate the question?",
+  "I'm not following. Could you clarify what you're saying in that message?",
+  "I don't understand. Can you rephrase your request with more clarity?",
+  "Could you clarify what you mean by that line?",
+  "I'm confused—can you repeat your question in other words?",
+  "I didn't catch that. Could you clarify your intent again?",
+  "Sorry, I didn't understand. Could you restate the request?",
+  "I'm not sure I understand. Could you clarify the last message you sent?",
+  "I don't understand. Could you reword your request so it's clearer?",
+  "Could you clarify what you mean by your last request?",
+  "I'm confused. Can you rephrase that request?",
+  "I didn't understand. Can you clarify what you want me to do next?",
+  "Sorry, I'm not following. Could you explain it again?",
+  "I'm not sure what you mean. Can you restate your question clearly?",
+  "I don't understand. Could you clarify the question you asked?",
+  "Could you clarify your meaning in that message?",
+  "I'm confused—could you restate it in simpler words?",
+  "I didn't catch that. Can you clarify the request again?",
+  "Sorry, I didn't understand. Could you clarify your question in another way?",
+  "I'm not following. Could you rephrase what you want to know?",
+  "I don't get it. Could you clarify what you're asking for?",
+  "Could you clarify that for me, please?",
+  "I'm confused. Could you reword the question for clarity?",
+  "I didn't understand. Could you clarify the intent of your question?",
+  "Sorry, I'm not sure I understand. Can you rephrase again?",
+  "I'm not following. Could you clarify what you meant by that statement?",
+  "I don't understand. Can you restate what you're asking in different words?",
+  "Could you clarify what you mean by your statement?",
+  "I'm confused—can you clarify your last point again?",
+  "I didn't understand. Could you rephrase the question so it's clear?",
+  "Sorry, I'm not sure what you mean. Can you clarify your request again?",
+  "I'm not following. Can you restate that with more clarity?",
+  "I don't understand. Could you clarify your question once more?",
+  "Could you clarify what you're referring to in your question?",
+  "I'm confused. Could you rephrase your last message with more detail?",
+  "I didn't catch that. Can you restate your request more clearly?",
+  "Sorry, I didn't understand. Could you clarify what you mean by that?",
+  "I'm not sure I understand. Can you reword your question to be clearer?",
+  "I don't understand. Could you clarify what you're asking me to do?",
+  "Could you clarify what you mean, in other words?",
+  "I'm confused—can you restate the question more simply?",
+  "I didn't understand. Could you clarify your request in plain language?",
+  "Sorry, I'm not following. Could you rephrase the last message?",
+  "I'm not sure I understand. Can you clarify the details of your request?",
+  "I don't understand. Could you restate your question in a clearer way?",
+  "Could you clarify your message again, please?",
+  "I'm confused. Could you explain your request another way?",
+  "I didn't catch that. Could you clarify what you're trying to say?",
+  "Sorry, I didn't understand. Can you rephrase your request more simply?",
+  "I'm not following. Could you clarify your question in simpler terms?",
+  "I don't get it. Could you restate your last message for clarity?",
+  "Could you clarify what you want me to do with that?",
+  "I'm confused—could you reword it again?",
+  "I didn't understand. Can you clarify your meaning in a different way?",
+  "Sorry, I'm not sure I understand. Could you rephrase the question again?",
+  "I'm not following. Could you restate your request in other words?",
+  "I don't understand. Can you clarify what you want to ask?",
+  "Could you clarify your last message so I understand?",
+  "I'm confused. Can you restate what you mean by that?",
+  "I didn't catch that. Could you rephrase the question more clearly?",
+  "Sorry, I didn't understand. Could you clarify what you're referring to?",
+  "I'm not sure I understand. Can you restate your question with more context?",
+  "I don't understand. Could you clarify your last question in simpler words?",
+  "Could you clarify your request so it makes sense to me?",
+  "I'm confused—can you rephrase your message more clearly?",
+  "I didn't understand. Could you restate your question again?",
+  "Sorry, I'm not following. Could you clarify your question for me again?",
+  "I'm not sure what you mean. Can you clarify your request one more time?",
+  "I don't understand. Could you reword it so I can follow?",
+  "Could you clarify what you mean by that question?",
+  "I'm confused. Could you restate your message with more clarity?",
+  "I didn't catch that. Could you clarify your message again?",
+  "Sorry, I didn't understand. Could you restate it more clearly?",
+  "I'm not sure I understand. Can you clarify your question a bit more?",
+  "I don't understand. Could you clarify your message in simpler terms?",
+  "Could you clarify your request again so I can help?",
+  "I'm confused—could you rephrase your request with more detail?",
+  "I didn't understand. Can you clarify what you're saying in your question?",
+  "Sorry, I'm not sure what you mean. Could you restate it in other words?",
+  "I'm not following. Could you clarify the meaning of your last message?",
+  "I don't get it. Could you clarify what you mean by that request?",
+  "Could you clarify what you're asking me to respond to?",
+  "I'm confused. Can you rephrase your request in plain terms?",
+  "I didn't understand. Could you clarify what you meant in your message?",
+  "Sorry, I'm not following. Can you restate your question with more clarity?"
+]
+
 COLORS = {
     "prompt": "\033[34m",
     "input": "\033[31m",
@@ -45,7 +901,7 @@ COLORS = {
 }
 
 COMMANDS = {
-    "fill":   ["fill","fill the","fil","fil the",""],
+    "fill":   ["fill","fill the","fil","fil the",],
     "exit":   ["q","e","exit","terminate","quit","end","save and exit","save and quit","save and end","save and terminate","end game","exit game","quit game","terminate game"],
     "go":     ["go","walk","travel","head"],
     "take":   ["pick up the","take the","get the","grab the","pick the","pickup","pick up","take","get","grab","pick"],
@@ -88,7 +944,7 @@ COMMANDS = {
         }},
 }
 
-TARGETS = {    
+TARGETS = {
     "north": ["forwards","forward","north","n"],
     "south": ["backwards","backward","south","s"],
     "east": ["rightwards","rightbound","leftward","right","east","e"],
@@ -106,7 +962,6 @@ TARGETS = {
     "area":["area","the area","surroundings","my surroundings","road","the road","forest","the forest","dense forest","the dense forest","plains","the plains","fields","the fields","barley","the barley","rice","the rice","corn","the corn","wheat","the wheat","field trail","the field trail","mountain","mountains","the mountains","the mountain","valley","the valley"],
 }
 
-trespass = 0
 game_board = {
     "main_board":{
             "-7,-9":"Plains.","-6,-9":"Plains with Road to the East.","-5,-9":"Road with Plains to North/West and Rocky area to the East. The air has a fresh salty smell.","-4,-9":"You fell in the dit"+"ch and cant see anything. The air has a fresh salty smell.","-3,-9":"Rocky area with Road to North/West and sea to South/East.",
@@ -130,13 +985,12 @@ game_board = {
                   "0,1":"you are in the south part of the barn. To your left is a manure tunnel. It makes the whole barns stink. To your right you see two small weird holes in the ground. In front of you is a tower of hay. The roof looks lower on the inside then on the outside. Two large barn doors tower upp behind you locked by a huge shiny padlock.",}
 }
 
-
-
 items = {"weapons_and_items":{"stars":{"owned":0,"damage":20,"chance":0.6545},"za'roc":{"owned":0,"damage":30},"axe":{"owned":0},"shovel":{"owned":0},"pickaxe_bad":{"owned":0},"pickaxe_good":{"owned":0},"pickaxe_perfect":{"owned":0},"rope":{"owned":0},"matches":{"owned":0},"lamp":{"owned":0,"on":False},"kerosene":{"owned":0},"mine_map":{"owned":0,"started":False},"letter": {"owned": 0},"stick":{"owned":0}},
          "food":{"starter_food":{"owned":0},"bread":{"owned":0,"value":40},"apple":{"owned":0,"value":65},"snail_pieces":{"owned":0,"value":"10"}},
          "water":{"0.5l_full_bottle":{"owned":0,"value":50,"%":100},"1l_full_bottle":{"owned":0,"value":100,"%":100},"2l_full_bottle":{"owned":0,"value":200,"%":100},"5l_full_bottle":{"owned":0,"value":500,"%":100},"0.5l_empty_bottle":{"owned":0},"1l_empty_bottle":{"owned":0},"2l_empty_bottle":{"owned":0},"5l_empty_bottle":{"owned":0}}
          }
 
+trespass = 0
 base_items = items
 x = 0
 y = 0
@@ -218,6 +1072,91 @@ class giant_spider:
         self.attack = 20
         self.strength = 25
         self.defense = 17
+
+def normalize_stem(word: str) -> str:
+    word = re.sub(r"[^a-z]", "", word.lower())
+
+    for suffix in COMMON_SUFFIXES:
+        if len(word) > len(suffix) + 2 and word.endswith(suffix):
+            if suffix in {"ies", "ied", "ier", "iers", "iest"}:
+                return word[: -len(suffix)] + "y"
+            return word[: -len(suffix)]
+
+    return word
+
+def build_word_forms(word: str) -> set[str]:
+    word = word.lower()
+    forms = {word}
+
+    if len(word) < 3:
+        return forms
+
+    forms.update(
+        {
+            f"{word}s",
+            f"{word}es",
+            f"{word}ed",
+            f"{word}ing",
+            f"{word}er",
+            f"{word}ers",
+            f"{word}est",
+            f"{word}ly",
+            f"{word}ness",
+            f"{word}ful",
+            f"{word}less",
+        }
+    )
+
+    if word.endswith("e") and len(word) > 3:
+        base = word[:-1]
+        forms.update({f"{base}ing", f"{base}er", f"{base}est", f"{base}ed"})
+
+    if word.endswith("y") and len(word) > 3:
+        base = word[:-1]
+        forms.update({f"{base}ies", f"{base}ied", f"{base}ier", f"{base}iest"})
+
+    return forms
+
+def words_match(token: str, candidate: str) -> bool:
+    token = token.lower()
+    candidate = candidate.lower()
+
+    if token in build_word_forms(candidate):
+        return True
+
+    token_stem = normalize_stem(token)
+    candidate_stem = normalize_stem(candidate)
+
+    if token_stem == candidate_stem:
+        return True
+
+    if len(token_stem) >= 4 and len(candidate_stem) >= 4:
+        return token_stem.startswith(candidate_stem) or candidate_stem.startswith(token_stem)
+
+    return False
+
+def find_match(target: str) -> tuple[str, str] | None:
+    tokens = re.findall(r"[a-z']+", target.lower())
+
+    for category, payload in WORDS.items():
+        for candidate in payload.get("words", []):
+            for token in tokens:
+                if words_match(token, candidate):
+                    return category, candidate
+
+    return None
+
+def respond_if_match(target: str,flag) -> str | None:
+    match = find_match(target)
+
+    if match is None:
+        return flag
+    else:
+        flag = "language"
+
+    category, _matched_word = match
+    printz(random.choice(WORDS[category].get("phrases", ["..."])))
+    return flag
 
 def line():
     frame = inspect.currentframe().f_back  # go one frame back
@@ -609,7 +1548,6 @@ def FIGHT(enemy):
             print("Invalid input:",y_n+". Type 'y' or 'n'.")
             continue
 
-
 def weapon_action(weapon,player_stats):
     if items["weapons_and_items"][weapon]["owned"] < 1:
         printz(f"Error in weapon action line() {line()}: You dont own any "+str(weapon)+"s!")
@@ -836,7 +1774,7 @@ def json_unpack(username,data):
 def json_dump(data):
         with save_lock:
             data = Zcryptv1.base64_encode1(data,JSON_ENCODED)
-            data = Zcryptv1.ceasar_self_encode(data,10,"zarck",JSON_ENCODED)
+            data = Zcryptv1.ceasar_self_encode(data,10,JSON_ENCODED_KEY,JSON_ENCODED)
             with open("zark.json", "w") as f:
                 json.dump(data, f, indent=4,sort_keys=True)
 
@@ -854,7 +1792,7 @@ def json_load():
             return raw
 
         try:
-            data = Zcryptv1.ceasar_self_decode(raw,10,"zarck",JSON_ENCODED)
+            data = Zcryptv1.ceasar_self_decode(raw,10,JSON_ENCODED_KEY,JSON_ENCODED)
             data = Zcryptv1.base64_decode1(data,JSON_ENCODED)
             return data if isinstance(data, dict) else {}
         except Exception:
@@ -898,8 +1836,6 @@ def fill():
                 items["water"][f]["owned"] -= 1
                 continue
                 
-
-
 def check_operations(command,target,user_input,raw_input,x,y,turns,username,data,enter):
         xy = f"{x},{y}"
         flag = None
@@ -952,9 +1888,16 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
             else:
                 printz(f"Invalid input. I guess you dont like me, but thats ok. I hope you still enjoy the game! :)")
         
+        # inspect (object) Finish
+        elif command in COMMANDS["inspect"]:
+            if xy == "barn,?" and target in TARGETS["barn_door"]:
+                pass
+            else:
+                printz(f"You cant examine a {target}")
 
         # barn
         elif x == 6 and y == -1 and "inspected_barn_door" in attrdict["attr"]:
+            flag = "barn"
             if command in COMMANDS["go"]:
                 barn_target = target.split(" ")
                 try:
@@ -969,7 +1912,6 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
 
                 except IndexError:
                     None
-        
         
         # West side of map not perfectly straight (box)
         elif command in COMMANDS["box"] or target in COMMANDS["box"]:
@@ -1051,7 +1993,6 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
             else:
                 printz(f"You cant see a {target} to pick up!")
 
-        
         # Reading items
         elif command in COMMANDS["read"]:
             flag = "read"
@@ -1063,7 +2004,6 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                     printz(f"You cant read letter because you have not picked up letter.")
             else:
                 printz(f"You cant read a "+target+"!")
-
         
         # Opening closed items
         elif command in COMMANDS["open"]:
@@ -1224,7 +2164,6 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
             else:
                 printz(f"You cant fill up a {target}!")
 
-
         # Search (area)
         elif command in COMMANDS["search"]:
             flag = "search"
@@ -1292,6 +2231,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
 
         # climbing
         elif command in COMMANDS["climb"]:
+            flag = "climb"
             if x == -3 and y == 2:
                 if target in TARGETS["tree"]:
                     printz(f"Your climbing the tall tree!")
@@ -1379,8 +2319,11 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                     x += 1
                 turns -= 1
 
+
             # mines
-            elif target in TARGETS["mines"]:
+        
+        # Mines
+        elif target in TARGETS["mines"]:
                 if x == -7 and y == 1:
                     if "moved_mine_rocks" in attrdict["attr"]:
                         if items["weapons_and_items"]["lamp"]["owned"] == True:
@@ -1399,14 +2342,13 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                     else:
                         printz(f"The entrance is blocked. You have to move the rocks.")
                 else:
-                    printz(f"You dont see any mines.")
-                    
-            Turns(turns,x,y,data,username)
-            x,y,lastxy,position_flag = print_position(x,y,flag,data,username)
-            
+                    printz(f"You dont see any mines.")  
+                Turns(turns,x,y,data,username)
+                x,y,lastxy,position_flag = print_position(x,y,flag,data,username)
 
         # Exiting and saving
         elif command in COMMANDS["exit"]:
+            flag = "exit"
             exit_event.set()
             printz(user_input.replace(" ", "")+"ing")
             player_stats["play_time"] += (datetime.now() - datetime.fromisoformat(player_stats["start_time"])).total_seconds()
@@ -1417,6 +2359,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
         
         #INFO command
         elif command in COMMANDS["info"]:
+            flag = "info"
             global typespeed
             if inputz("Are you totally sure you need it?>  ") in COMMANDS["yes"]:
                 print(" ")
@@ -1483,10 +2426,10 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                     printz(f"Okay, its your loss!")
             else:
                 printz(f"Okay, its your loss!")
-        
                 
         # INVENTORY command
-        elif command in COMMANDS["inventory"]:
+        elif user_input in COMMANDS["inventory"]:
+            flag = "inventory"
             check = ""
             for f in items:
                 for d in items[f]:
@@ -1499,9 +2442,9 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
             if check == "":
                 printz(f"your inventory is empty!") 
 
-
         # WEAPONS command
-        elif command in COMMANDS["weapons"]:
+        elif user_input in COMMANDS["weapons"]:
+            flag = "weapons"
             check = ""
             weapons = items["weapons_and_items"]
             for f in weapons:
@@ -1515,7 +2458,8 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                 printz(f"You dont have any weapons!")
 
         # FOOD command
-        elif command in COMMANDS["food"]:
+        elif user_input in COMMANDS["food"]:
+            flag = "food"
             check = ""
             food = items["food"]
             for f in food:
@@ -1529,7 +2473,8 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                 printz(f"You dont have any food!")
 
         # WATER command
-        elif command in COMMANDS["water"]:
+        elif user_input in COMMANDS["water"]:
+            flag = "water"
             check = ""
             water = items["water"]
             for f in water:
@@ -1543,7 +2488,8 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                 printz(f"You dont have any water!")
         
         # STATS command
-        elif command in COMMANDS["stats"]:
+        elif user_input in COMMANDS["stats"]:
+            flag = "stats"
             player_stats["play_time"] += (datetime.now() - datetime.fromisoformat(attrdict["divide_time"])).total_seconds()
             printz(f"Player stats: ")
             print(" ")
@@ -1557,7 +2503,8 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
             attrdict["divide_time"] = datetime.now().isoformat()
         
         # DEATHS command
-        elif command in COMMANDS["deaths"]:
+        elif user_input in COMMANDS["deaths"]:
+            flag = "deaths"
             printz("This is a list of all the ways you have died.")
             print(" ")
             printz("You have:")
@@ -1716,6 +2663,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
 
         # Admin command to toggle countdown on and off
         elif command in COMMANDS["adminmode"]:
+            flag = "adminmode"
             if "admin" in attrdict["attr"] or "a" in attrdict["attr"]:
                 while True:
                     on_off_admin = inputz("Turn admin mode on or off? (on/off)>  ")
@@ -1742,8 +2690,10 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                         continue
             else:
                 printz(f"You don't have admin privileges! Who are you trying to trick?")
+
         # Delete acount
         elif command in COMMANDS["delete"]:
+            flag = "delete"
             while True:
                 delete = inputz("Delete acount? (y/n)>  ")
                 if delete in COMMANDS["yes"]:
@@ -1760,8 +2710,6 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                     printz(f"Invalid input. Please enter 'y' or 'n'.")
                     continue
                 
-                
-
         # Punishing people who press enter without any context
         elif user_input == "":
             flag = "enter"
@@ -1800,10 +2748,15 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                 printz(f"Wait "+str(enter)+" seconds.")
             Countdown(enter)
             enter += 1
+        
+        # smart statements
+        elif flag == None:
+            flag = respond_if_match(user_input.lower(),flag)
 
         # Invalid operation detection
         elif flag == None:
-            print("Operation: '"+user_input+"' is not valid")
+            printz(random.choice(RANDOM_FEEDBACK[i]))
+
         return x,y,flag,turns,data,enter
         
 def print_position(x,y,flag,data,username):
@@ -2205,16 +3158,17 @@ def Update():
     # Check hunger
 
     if player_stats["hunger"] <= 0:
+        print(" ")
         printz("You died of hunger!")
         attrdict["death"][xy] = "You died of hunger."
         Game_over()
     elif player_stats["hunger"] <= 10:
-        printz("You are extremely hungry and can not move!")
         print(" ")
+        printz("You are extremely hungry and can not move!")
         attrdict["attr"].append("cant_move")
     elif player_stats["hunger"] <= 20:
-        printz("You are very hungry and start to move slower because of it.")
         print(" ")
+        printz("You are very hungry and start to move slower because of it.")
         attrdict["attr"].append("move_slowly")
         try:
             attrdict["attr"].remove("cant_move")
@@ -2224,8 +3178,8 @@ def Update():
         except ValueError:
             pass
     elif player_stats["hunger"] <= 30:
-        printz("You are very hungry.")
         print(" ")
+        printz("You are very hungry.")
         try:
             attrdict["attr"].remove("cant_move")
             printz("You are not extremely hungry anymore and can now move again.")
@@ -2241,8 +3195,8 @@ def Update():
         except ValueError:
             pass
     elif player_stats["hunger"] <= 50:
-        printz("You are starting to get hungry.")
         print(" ")
+        printz("You are starting to get hungry.")
         try:
             attrdict["attr"].remove("cant_move")
             printz("You are not extremely hungry anymore and can now move again.")
@@ -2273,7 +3227,6 @@ def Update():
         except ValueError:
             pass
 
-    print(" ")
     
     # Check thirst
     if player_stats["thirst"] <= 0:
@@ -2281,13 +3234,13 @@ def Update():
         attrdict["death"][xy] = "You died of dehydration"
         Game_over()
     elif player_stats["thirst"] <= 15:
-        printz("You are so extreamly dehydrated you lost your sight!")
+        printz("You are so extremely dehydrated you lost your sight!")
         attrdict["attr"].append("blind")
     elif player_stats["thirst"] <= 25:
         printz("You are very dehydrated and start to lose your sight because of it.")
         try:
             attrdict["attr"].remove("blind")
-            printz("You are not extreamly dehydrated anymore and can now see again.")
+            printz("You are not extremely dehydrated anymore and can now see again.")
             while True:
                 attrdict["attr"].remove("blind")
         except ValueError:
@@ -2296,7 +3249,7 @@ def Update():
         printz("You are very dehydrated. Make sure to drink water soon!")
         try:
             attrdict["attr"].remove("blind")
-            printz("You are not extreamly dehydrated anymore and can now see again.")
+            printz("You are not extremely dehydrated anymore and can now see again.")
             while True:
                 attrdict["attr"].remove("blind")
         except ValueError:
@@ -2305,7 +3258,7 @@ def Update():
         printz("You are starting to get dehydrated. Make sure to drink water soon!")
         try:
             attrdict["attr"].remove("blind")
-            printz("You are not extreamly dehydrated anymore and can now see again.")
+            printz("You are not extremely dehydrated anymore and can now see again.")
             while True:
                 attrdict["attr"].remove("blind")
         except ValueError:
@@ -2313,7 +3266,7 @@ def Update():
     else:
         try:
             attrdict["attr"].remove("blind")
-            printz("You are not extreamly dehydrated anymore and can now see again.")
+            printz("You are not extremely dehydrated anymore and can now see again.")
             while True:
                 attrdict["attr"].remove("blind")
         except ValueError:
@@ -2342,19 +3295,12 @@ for f in COMMANDS:
 
     COMMAND = parser(COMMAND)
 
-
-
 print("Checking game board...")
-#validate,errors = zarck_parser.validate_game_board["main_board"](game_board["main_board"])
-#if validate == False:
-#    for f in errors:
-#        print(f)
-#    os._exit(0)
-#else:
-#    print(errors)
-
 
 data = json_load() or {}
+
+# Login 
+
 while True:
     loginorcreate = inputz("Do you have a user? (y/n)>  ").lower().replace(" ","")
         
