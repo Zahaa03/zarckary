@@ -89,7 +89,7 @@ def randomize(data,type:str):
 
 def json_dump(data):
     filename = "zkey.json"
-    data = base64_encode1(data,True)
+    data = base64_encode1(data,False)
     with open(filename, "w") as f:
         json.dump(data, f)
 
@@ -97,6 +97,6 @@ def json_load():
     filename = "zkey.json"
     with open(filename, "r") as f:
         data = json.load(f)   
-    datas = base64_decode1(data,True)
+    datas = base64_decode1(data,False)
     return datas
 
