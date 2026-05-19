@@ -102,7 +102,7 @@ WORDS = {
             "kind", "awesome", "best", "smart", "helpful", "amazing", "wonderful",
             "caring", "sweet", "friendly", "polite", "generous", "thoughtful", "lovely",
             "great", "fantastic", "brilliant", "excellent", "supportive", "patient",
-            "cheerful", "honest", "warm", "gentle", "respectful",
+            "cheerful", "honest", "warm", "gentle", "respectful","like",
         ],
         "phrases": [
             "That's really kind of you.",
@@ -162,7 +162,7 @@ WORDS = {
             "joke", "funny", "hilarious", "laugh", "comedy", "humor", "witty",
             "silly", "goofy", "pun", "giggle", "chuckle", "amusing", "playful",
             "clown", "meme", "prank", "comedian", "banter", "quirky", "ridiculous",
-            "snicker", "jest", "gags", "joker",
+            "snicker", "jest", "gags", "joker","funny-looking",
         ],
         "phrases": [
             "That got a laugh out of me.",
@@ -2754,8 +2754,9 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
             flag = respond_if_match(user_input.lower(),flag)
 
         # Invalid operation detection
-        elif flag == None:
-            printz(random.choice(RANDOM_FEEDBACK[i]))
+        if flag == None:
+            i = random.randint(0,len(RANDOM_FEEDBACK)-1)
+            printz(RANDOM_FEEDBACK[i])
 
         return x,y,flag,turns,data,enter
         
