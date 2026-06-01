@@ -9,11 +9,13 @@ import time
 import random 
 import sys
 import subprocess
+import copy
 from datetime import datetime
 import threading
 import inspect
 from threading import Event
 import re
+import base64
 
 HEARTBEAT_FILE = "tick.json"
 
@@ -23,6 +25,9 @@ global trespass
 global data
 global LETTER
 global attrdict
+global barn
+global barnx
+global barny
 
 
 TYPE_SPEED = 0.02
@@ -42,7 +47,10 @@ WORDS = {
             "hate", "idiotic", "worst", "dumb", "irritating", "annoying", "stupid",
             "rude", "cruel", "nasty", "mean", "awful", "terrible", "useless",
             "hostile", "insulting", "selfish", "bratty", "disrespectful", "hurtful",
-            "bitter", "offensive", "rotten", "obnoxious", "unkind",
+            "bitter", "offensive", "rotten", "obnoxious", "unkind", "trash",
+            "garbage", "lame", "boring", "sucks", "pathetic", "horrible",
+            "dreadful", "cringe", "cringey", "worthless", "bad", "fail",
+            "failure", "broken", "buggy", "unfair", "stupidest", "disgusting",
         ],
         "phrases": [
             "Let's keep the conversation respectful.",
@@ -102,7 +110,10 @@ WORDS = {
             "kind", "awesome", "best", "smart", "helpful", "amazing", "wonderful",
             "caring", "sweet", "friendly", "polite", "generous", "thoughtful", "lovely",
             "great", "fantastic", "brilliant", "excellent", "supportive", "patient",
-            "cheerful", "honest", "warm", "gentle", "respectful","like",
+            "cheerful", "honest", "warm", "gentle", "respectful","like", "love",
+            "cool", "epic", "fun", "funny", "goated", "legendary", "impressive",
+            "solid", "nice", "beautiful", "clever", "good", "perfect", "fantabulous",
+            "thanks", "thankful", "grateful", "appreciate", "enjoy", "favorite",
         ],
         "phrases": [
             "That's really kind of you.",
@@ -162,7 +173,9 @@ WORDS = {
             "joke", "funny", "hilarious", "laugh", "comedy", "humor", "witty",
             "silly", "goofy", "pun", "giggle", "chuckle", "amusing", "playful",
             "clown", "meme", "prank", "comedian", "banter", "quirky", "ridiculous",
-            "snicker", "jest", "gags", "joker","funny-looking",
+            "snicker", "jest", "gags", "joker","funny-looking", "lol", "lmao",
+            "rofl", "haha", "hehe", "hahaha", "lmfao", "cracked", "comical",
+            "punchline", "hysterical", "side-splitting", "kidding", "sarcasm",
         ],
         "phrases": [
             "That got a laugh out of me.",
@@ -222,7 +235,9 @@ WORDS = {
             "sad", "unhappy", "depressed", "cry", "tears", "lonely", "heartbroken",
             "upset", "miserable", "gloomy", "down", "sorrow", "grief", "hopeless",
             "tired", "hurt", "abandoned", "blue", "crushed", "defeated",
-            "disappointed", "stressed", "anxious", "withdrawn", "broken",
+            "disappointed", "stressed", "anxious", "withdrawn", "broken", "empty",
+            "drained", "numb", "lost", "helpless", "worthless", "afraid", "scared",
+            "terrified", "devastated", "regret", "ashamed", "sorry", "exhausted",
         ],
         "phrases": [
             "I'm here with you.",
@@ -282,7 +297,9 @@ WORDS = {
             "angry", "mad", "furious", "rage", "irritated", "annoyed", "upset",
             "bitter", "heated", "frustrated", "resentful", "hostile", "aggressive",
             "grumpy", "offended", "outraged", "livid", "cross", "stormy", "fuming",
-            "tense", "snappy", "sharp", "cranky", "seething",
+            "tense", "snappy", "sharp", "cranky", "seething", "pissed", "enraged",
+            "triggered", "salty", "infuriated", "irate", "madder", "explosive",
+            "fedup", "done", "hate", "wtf", "damn", "furiousness",
         ],
         "phrases": [
             "Let's take a breath first.",
@@ -337,16 +354,37 @@ WORDS = {
             "Pause, breathe, then answer.",
         ],
     },
+    "rude": {
+        "words": [
+            "fuck", "fucking", "shit", "bitch", "asshole", "dick", "penis",
+            "cock", "pussy", "slut", "whore", "motherfucker", "bastard",
+            "retard", "dumbass", "jackass", "prick", "twat", "cunt", "stfu",
+            "fk", "fck", "fuk", "shitty", "bullshit", "dipshit", "shithead",
+            "wanker", "tosser", "arse", "arsehole", "balls", "nutsack",
+        ],
+        "phrases": [
+            "Please avoid rude language.",
+            "Let's keep this chat respectful.",
+            "Try saying that without swearing.",
+            "Please use cleaner words.",
+            "That wording is too vulgar for this chat.",
+            "Let's keep it civil and respectful.",
+            "Please rephrase without profanity.",
+            "Keep it polite, please.",
+            "That language is not okay here.",
+            "Let's keep this conversation friendly.",
+        ],
+    },
 }
 
 ENEMY_SPAWN_CHANCE = {
-    "fields": [250.5,3000.5],
-    "plains": [2000.5,10000.5],
-    "forest": [400.5,4000.5],
-    "rocky_area": [750.5,6000.5],
-    "dense_forest": [700.5,6500.5],
-    "valley_and_hills": [1000.5,8000.5],
-    "road": [1200.5,9000.5],
+    "fields": [200.5,3000.5],
+    "plains": [1900.5,10000.5],
+    "forest": [350.5,4000.5],
+    "rocky_area": [700.5,6000.5],
+    "dense_forest": [650.5,6500.5],
+    "valley_and_hills": [9500.5,8000.5],
+    "road": [1000.5,9000.5],
 }
 
 RANDOM_FEEDBACK = [
@@ -912,6 +950,7 @@ COMMANDS = {
     "box":    ["minute box","tiny box","small box","box","large box","huge box","box that weighs a ton","stick"],
     "admin":  ["a","ad","admin","administrator","adminm"],
     "delete": ["del","delete","delete acount","del acount"],
+    "change_account": ["change account","change acount","switch account","switch acount","switch user","logout","log out"],
     "search": ["search","search the","searchthe","serch","sarch"],
     "info":   ["info","help","INFO","INFORMATION","HELP","COMMANDS","COMMANDS LIST","COMMAND LIST","HELP ME","HELP!","WHAT CAN I DO?","WHAT CAN I DO"],
     "inventory": ["inventory", "stuff i own", "INVENTORY","i","I","stuff"],
@@ -981,8 +1020,9 @@ game_board = {
             "-7,5":"Forest with Mountains to North/East.","-6,5":"Forest with Mountains to North/East.","-5,5":"Forest with Mountains to North/East.","-4,5":"Valley with Mountains to the North and Forest to the South.","-3,5":"Valley with Mountains to the North and Forest to the South.","-2,5":"Rocky area with Mountains to North/West and Forest to South/West.","-1,5":"Rocky area.","0,5":"Rocky area with Road to South/East.","1,5":"Road with Rocky area to the West.","2,5":"Light Forest with Road to the West and fields to the South.","3,5":"Light Forest with Fields to the south.","4,5":"Light Forest with Fields to the South and Lake to North/East. You see a Boathouse to the East.","5,5":"Plains with Forest to the West, Fields to the South and Lake to the North. Before you is a Boathouse with no visible means of entry except a boarded up door.","6,5":"Plains with Fields to the South and Lake to North/West. You see a Boathouse to the West",
             "-7,6":"Valley with Forest to the South and Mountains to the North.","-6,6":"Valley with Forest to the South and Mountains to the North.","-5,6":"Valley between a Mountain to the west and another one to the East.","-4,6":"You climbed up a mountain. From here you can see very far into the distance. To the East a wide Rocky area lies. To the South Forest stretches on as far as you can see.","-3,6":"You climbed up a mountain. From here you can see very far into the distance. To the East a wide Rocky area lies. To the South Forest stretches on as far as you can see.","-2,6":"Rocky area with Mountains to the West.","-1,6":"Rocky area.","0,6":"Rocky area with Road to the South/East.","1,6":"You fell in the dit"+"ch and cant see anything!","2,6":"Light Forest with Road to the West.","3,6":"Light Forest with Lake to the East.","4,6":"Lake. Boathouse lies South/East from here.","5,6":"Lake. Boathouse lies to the South.","6,6":"Lake. Boathouse lies South/West from here.",
     },
-    "barn_board":{"0,0":"Two big barn doors loom up in front of you. You can not open them, because their locked from the inside.",
-                  "0,1":"you are in the south part of the barn. To your left is a manure tunnel. It makes the whole barns stink. To your right you see two small weird holes in the ground. In front of you is a tower of hay. The roof looks lower on the inside then on the outside. Two large barn doors tower upp behind you locked by a huge shiny padlock.",}
+    "barn_board":{
+        "-1,0":"You are outside the South/East side of the barn. In front of you the red peeling paint is just visible under the thick layer of moss and vines that cover the wall.","-1,1":"You are outside the East side of the barn. In front of you the red peeling paint is just visible under the thick layer of moss and vines that cover the wall.","-1,2":"You are outside the North/East side of the barn. In front of you the red peeling paint is just visible under the thick layer of moss and vines that cover the wall.","-1,3":"Your outside the North/East corner of the barn. In front of you the red peeling paint is just visible under the thick layer of moss and vines that cover the wall.",
+        "0,0":"Two big barn doors loom up in front of you. You can not open them, because their locked from the inside.","0,1":"You are in the south part of the barn. To your left is a manure tunnel. It makes the whole barns stink. To your right you see two small weird holes in the ground. In front of you is a tower of hay. The roof looks lower on the inside then on the outside. Two large barn doors tower upp behind you locked by a huge shiny padlock.",}
 }
 
 items = {"weapons_and_items":{"stars":{"owned":0,"damage":20,"chance":0.6545},"za'roc":{"owned":0,"damage":30},"axe":{"owned":0},"shovel":{"owned":0},"pickaxe_bad":{"owned":0},"pickaxe_good":{"owned":0},"pickaxe_perfect":{"owned":0},"rope":{"owned":0},"matches":{"owned":0},"lamp":{"owned":0,"on":False},"kerosene":{"owned":0},"mine_map":{"owned":0,"started":False},"letter": {"owned": 0},"stick":{"owned":0}},
@@ -991,7 +1031,7 @@ items = {"weapons_and_items":{"stars":{"owned":0,"damage":20,"chance":0.6545},"z
          }
 
 trespass = 0
-base_items = items
+base_items = copy.deepcopy(items)
 x = 0
 y = 0
 data = {}
@@ -1005,8 +1045,34 @@ info = ["IMPORTANT - turning off terminal without using the proper exit command 
 typespeed = 0
 wait = time.sleep
 exit_event = Event()
-save_lock = threading.Lock()
+barnx = 0
+barny = 0
+wilhelm_pixie_fairy = False
+attrdict["poisoned_water_emoji"] = 10000
 
+ATTRDICT_TEMPLATE = copy.deepcopy(attrdict)
+PLAYER_STATS_TEMPLATE = copy.deepcopy(player_stats)
+
+
+def build_default_player_attrdict(password_value=""):
+    state = copy.deepcopy(ATTRDICT_TEMPLATE)
+    state.update(
+        {
+            "password": password_value,
+            "x": 0,
+            "y": 0,
+            "items": copy.deepcopy(base_items),
+            "achieved": [],
+            "turns": -1,
+            "trespass": 0,
+            "player_stats": copy.deepcopy(PLAYER_STATS_TEMPLATE),
+            "lastxy": "0,0",
+            "wilhelm_pixie_fairy": False,
+            "barnx": 0,
+            "barny": 0,
+        }
+    )
+    return state
 
 
 
@@ -1072,6 +1138,101 @@ class giant_spider:
         self.attack = 20
         self.strength = 25
         self.defense = 17
+
+def emoji(times: int):
+    import random
+    import time
+    import sys
+
+    emojis = [
+    "🌈","🦄","🦜","🦋","🦩",
+    "🌺","🌸","🌻","🍉","🍓",
+    "🍍","🧁","🍭","🎉","🎆",
+    "✨","💎","🔮","💖","💙"
+    ]
+
+    output = []
+
+    for f in range(times):
+        # add 1–3 random emojis each loop
+        for _ in range(random.randint(1, 3)):
+            output.append(random.choice(emojis))
+
+        # keep last 40 emojis only (prevents infinite growth)
+        output = output[-40:]
+
+        # print on same line
+        sys.stdout.write("".join(output))
+        sys.stdout.flush()
+        time.sleep(0.007)
+
+def adminpassword():
+    return base64.b64encode(str(int(str(datetime.now())[11:13]) - (int(str(datetime.now())[14:16]))).encode()).decode()
+
+def normalize_player_record(record):
+    player_record = record if isinstance(record, dict) else {}
+    player_attrdict = build_default_player_attrdict()
+
+    nested_attrdict = player_record.get("attrdict")
+    if isinstance(nested_attrdict, dict):
+        player_attrdict.update(copy.deepcopy(nested_attrdict))
+
+    for field, value in player_record.items():
+        if field == "attrdict":
+            continue
+        player_attrdict[field] = copy.deepcopy(value)
+
+    return {"attrdict": player_attrdict}
+
+def normalize_save_data(raw_data):
+    if not isinstance(raw_data, dict):
+        return {}
+
+    normalized = {}
+    for player_name, player_record in raw_data.items():
+        normalized[player_name] = normalize_player_record(player_record)
+    return normalized
+
+def get_player_attrdict(player_data, player_name):
+    return player_data[player_name]["attrdict"]
+
+def sync_player_attrdict(player_attrdict, password_value, x_value, y_value):
+    player_attrdict["password"] = password_value
+    player_attrdict["x"] = x_value
+    player_attrdict["y"] = y_value
+    player_attrdict["items"] = items
+    player_attrdict["achieved"] = achieved
+    player_attrdict["turns"] = turns
+    player_attrdict["trespass"] = trespass
+    player_attrdict["player_stats"] = player_stats
+    player_attrdict["lastxy"] = lastxy
+    player_attrdict["wilhelm_pixie_fairy"] = wilhelm_pixie_fairy
+    player_attrdict["barnx"] = barnx
+    player_attrdict["barny"] = barny
+    return player_attrdict
+
+def reset_player_progress(player_attrdict, reset_flag):
+    player_attrdict["x"] = 0
+    player_attrdict["y"] = 0
+    player_attrdict["items"] = copy.deepcopy(base_items)
+    player_attrdict["lastxy"] = "0,0"
+    player_attrdict["wilhelm_pixie_fairy"] = False
+    player_attrdict["barnx"] = 0
+    player_attrdict["barny"] = 0
+
+    stats = player_attrdict.setdefault("player_stats", copy.deepcopy(PLAYER_STATS_TEMPLATE))
+    stats["health"] = 100
+    stats["attack"] = 15
+    stats["strength"] = 15
+    stats["defense"] = 10
+    stats["thirst"] = 100
+    stats["hunger"] = 100
+
+    player_attrdict.setdefault("attr", [])
+    if reset_flag not in player_attrdict["attr"]:
+        player_attrdict["attr"].append(reset_flag)
+
+    return player_attrdict
 
 def normalize_stem(word: str) -> str:
     word = re.sub(r"[^a-z]", "", word.lower())
@@ -1180,25 +1341,10 @@ def timez(izoformat):
     return f"{t} {d}/{m}/{y}"
 
 def Game_over():
-    key_len = 30
-    save_key = ""
     try:
-        for f in range(key_len):
-            save_key += random.choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
-        # save acount if watcher terminates game without reason
-        data[username]["save_key"] = {"key":save_key,"data":data[username].copy()}
+        player_attrdict = get_player_attrdict(data, username)
         # reset
-        data[username]["x"] = 0
-        data[username]["y"] = 0
-        data[username]["items"] = base_items
-        data[username]["lastxy"] = "0,0"
-        data[username]["player_stats"]["health"] = 100
-        data[username]["player_stats"]["attack"] = 15
-        data[username]["player_stats"]["strength"] = 15
-        data[username]["player_stats"]["defense"] = 10
-        data[username]["player_stats"]["thirst"] = 100
-        data[username]["player_stats"]["hunger"] = 100
-        data[username]["attrdict"]["attr"].append("reset1")
+        reset_player_progress(player_attrdict, "reset1")
     except KeyError:
         print(f"Error line() {line()}: Could not reset {username} because {username} does not exist.")
         os._exit(0)
@@ -1209,7 +1355,7 @@ def Game_over():
             printz(f"You decided to try again.")
             Start_game(data,x,y,wait,typespeed,lastxy,player_stats,achieved,attrdict,items,trespass)
         elif start_again in COMMANDS["no"]:
-            printz(f"You rage quieted and exited.")
+            printz(f"You rage quited and exited.")
             printz(f"Exiting...")
             os._exit(0)
         else:
@@ -1229,7 +1375,7 @@ def inputz(text):
     return user_input
 
 def Search_ditch():
-    printz(f"you are searching the dit"+"ch.")
+    printz(f"You are searching the dit"+"ch.")
     wait(2)
     printz(f"This takes 15 seconds.")
     Countdown(15)
@@ -1765,38 +1911,39 @@ def SWIM(data,username):
             printz(f"Your back at the same place you started from and did not drift away.")
 
 def json_pack(username,x,y):
-        data[username] = {"password": password, "x": x, "y": y, "items": items, "achieved": achieved,"turns":turns,"trespass":trespass,"player_stats":player_stats,"lastxy":lastxy,"attrdict":attrdict}
-        return data
+    sync_player_attrdict(attrdict, password, x, y)
+    data[username] = {"attrdict": attrdict}
+    return data
 
 def json_unpack(username,data):
-        return data[username]["x"], data[username]["y"], data[username]["items"], data[username].get("achieved", []), data[username]["turns"],data[username]["trespass"],data[username]["player_stats"],data[username]["lastxy"],data[username]["attrdict"]
+    player_attrdict = get_player_attrdict(data, username)
+    return player_attrdict["x"], player_attrdict["y"], player_attrdict["items"], player_attrdict.get("achieved", []), player_attrdict["turns"],player_attrdict["trespass"],player_attrdict["player_stats"],player_attrdict["lastxy"],player_attrdict,player_attrdict.get("wilhelm_pixie_fairy", False),player_attrdict.get("barnx", 0),player_attrdict.get("barny", 0)
 
 def json_dump(data):
-        with save_lock:
-            data = Zcryptv1.base64_encode1(data,JSON_ENCODED)
-            data = Zcryptv1.ceasar_self_encode(data,10,JSON_ENCODED_KEY,JSON_ENCODED)
-            with open("zark.json", "w") as f:
-                json.dump(data, f, indent=4,sort_keys=True)
+        data = Zcryptv1.base64_encode1(data,JSON_ENCODED)
+        data = Zcryptv1.ceasar_self_encode(data,10,JSON_ENCODED_KEY,JSON_ENCODED)
+        with open("zark.json", "w") as f:
+            json.dump(data, f, indent=4,sort_keys=True)
 
 def json_load():
-        with save_lock:
-            try:
-                with open("zark.json", "r") as f:
-                    raw = json.load(f)
-            except FileNotFoundError:
-                return {}
-            except json.JSONDecodeError:
-                return {}
+        try:
+            with open("zark.json", "r") as f:
+                raw = json.load(f)
+        except FileNotFoundError:
+            return {}
+        except json.JSONDecodeError:
+            return {}
 
         if isinstance(raw, dict):
-            return raw
+            data = raw
+        else:
+            try:
+                data = Zcryptv1.ceasar_self_decode(raw,10,JSON_ENCODED_KEY,JSON_ENCODED)
+                data = Zcryptv1.base64_decode1(data,JSON_ENCODED)
+            except Exception:
+                return {}
 
-        try:
-            data = Zcryptv1.ceasar_self_decode(raw,10,JSON_ENCODED_KEY,JSON_ENCODED)
-            data = Zcryptv1.base64_decode1(data,JSON_ENCODED)
-            return data if isinstance(data, dict) else {}
-        except Exception:
-            return {}
+        return normalize_save_data(data)
 
 def fill():
     for f in items["water"]:
@@ -1840,21 +1987,6 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
         xy = f"{x},{y}"
         flag = None
 
-        # Reload reseated data
-        try:
-            if user_input == data[username]["save_key"]["key"]:
-                flag = "resave"
-                printz(f"Reloading data...")
-                wait(2)
-                data[username] = data[username]["save_key"]["data"].copy()
-                printz(f"Data reloaded!")
-                print(" ")
-                if "save_key" in data[username]:
-                    del data[username]["save_key"]
-                x,y,lastxy,position_flag = print_position(x,y,"none",data,username)
-        except KeyError:
-            None
-
         # special ops
         if raw_input == "zackary is the best!":
             flag = "admin"
@@ -1890,28 +2022,41 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
         
         # inspect (object) Finish
         elif command in COMMANDS["inspect"]:
+            flag = "inspect"
             if xy == "barn,?" and target in TARGETS["barn_door"]:
                 pass
             else:
                 printz(f"You cant examine a {target}")
 
         # barn
-        elif x == 6 and y == -1 and "inspected_barn_door" in attrdict["attr"]:
-            flag = "barn"
+        elif xy == "6,-1" and "inspected_barn_door" in attrdict["attr"]:
             if command in COMMANDS["go"]:
                 barn_target = target.split(" ")
                 try:
                     barn_target.remove("of")
+                except ValueError:
+                    pass
+                try:
                     barn_target.remove("off")
                 except ValueError:
-                    None
+                    pass
                 try:
-                    if barn_target[0] in (TARGETS["north"],TARGETS["south"],TARGETS["east"],TARGETS["west"]):
-                        if barn_target[1] in TARGETS["barn"]:
-                            None
-
+                    if barn_target[1] in (TARGETS["north"],TARGETS["south"],TARGETS["east"],TARGETS["west"]):
+                        if barn_target[2] in TARGETS["barn"]:
+                            flag = "barn"
+                            barn = True
+                            if barn_target[1] == "north":
+                                barny += 1
+                            elif barn_target[1] == "south":
+                                barny -= 1
+                            elif barn_target[1] == "east":
+                                barnx += 1
+                            elif barn_target[1] == "west":
+                                barnx -= 1
+                            attrdict["barn"] = True
+                            print_position(barnx,barny,flag,data,username)
                 except IndexError:
-                    None
+                    pass
         
         # West side of map not perfectly straight (box)
         elif command in COMMANDS["box"] or target in COMMANDS["box"]:
@@ -2128,6 +2273,13 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                             else:
                                 selected["%"] = 0
                             printz(f"your {selected_key} is now empty. It has been moved to {empty_key}.")
+                        if "poisoned_water" in attrdict["attr"]:
+                            printz(f"You feel dizzy!")
+                            wait(2)
+                            printz(f"The world is swimming and spinning around your eyes!")
+                            wait(3)
+                            printz(f"You start seeing colors and patterns that are not there!")
+                            emoji(attrdict["poisoned_water_emoji"])
             else:
                 printz(f"You cant drink a {target}!")
         
@@ -2149,6 +2301,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                         printz("You are filling up your water bottles in a ditch!")
                         wait(2)
                         printz("This might poison you!")
+                        attrdict["attr"].append("poisoned_water")
                         i = True
                     elif xy in attrdict["water_sources"]:
                         printz("You are filling upp your water bottles in clean fresh water!")
@@ -2318,9 +2471,7 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                 elif target in TARGETS["west"]:
                     x += 1
                 turns -= 1
-
-
-            # mines
+            print_position(x,y,flag,data,username)
         
         # Mines
         elif target in TARGETS["mines"]:
@@ -2498,6 +2649,8 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                     printz(f"play time(s): "+str(player_stats[f].__int__()))
                 elif f == "start_time":
                     printz(f"current run start time: "+timez(player_stats[f]))
+                elif f[0:2] == "xp":
+                    printz(f"Xp: {player_stats["xp"]["total"]}")
                 else:
                     printz(f+": "+str(player_stats[f]))
             attrdict["divide_time"] = datetime.now().isoformat()
@@ -2677,19 +2830,51 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                             printz(f"Admin mode is already off!")
                             break
                     elif on_off_admin in COMMANDS["on"]:
-                        if "a" in attrdict["attr"]:
-                            attrdict["attr"].remove("a")
-                            attrdict["attr"].append("admin")
-                            printz(f"Admin mode turned on!")
+                        if "admin" in attrdict["attr"]:
+                            printz(f"Admin mode is already on!")
                             break
                         else:
-                            printz(f"Admin mode is already on!")
+                            if "a" in attrdict["attr"]:
+                                attrdict["attr"].remove("a")
+                            attrdict["attr"].append("admin")
+                            printz(f"Admin mode turned on!")
                             break
                     else:
                         printz(f"Invalid input. Please enter 'on' or 'off'.")
                         continue
             else:
-                printz(f"You don't have admin privileges! Who are you trying to trick?")
+                adminword = inputz("Do you have a admin password? >  ")
+                if adminword == adminpassword():
+                    print(" ")
+                    while True:
+                        on_off_admin = inputz("Turn admin mode on or off? (on/off)>  ")
+                        if on_off_admin in COMMANDS["off"]:
+                            if "a" not in attrdict["attr"]:
+                                attrdict["attr"].append("a")
+                                try:
+                                    attrdict["attr"].remove("admin")
+                                except ValueError:
+                                    pass
+                                printz(f"Admin mode turned off!")
+                                break
+                            else:
+                                printz(f"Admin mode is already off!")
+                                break
+                        elif on_off_admin in COMMANDS["on"]:
+                            if "admin" in attrdict["attr"]:
+                                printz(f"Admin mode is already on!")
+                                break
+                            else:
+                                if "a" in attrdict["attr"]:
+                                    attrdict["attr"].remove("a")
+                                attrdict["attr"].append("admin")
+                                printz(f"Admin mode turned on!")
+                                break
+                        else:
+                            printz(f"Invalid input. Please enter 'on' or 'off'.")
+                            continue
+                else:
+                    printz("That is not a valid admin password!")
 
         # Delete acount
         elif command in COMMANDS["delete"]:
@@ -2705,6 +2890,25 @@ def check_operations(command,target,user_input,raw_input,x,y,turns,username,data
                     os._exit(0)
                 elif delete in COMMANDS["no"]:
                     printz(f"You decided not to delete your acount.")
+                    break
+                else:
+                    printz(f"Invalid input. Please enter 'y' or 'n'.")
+                    continue
+        
+        # Changing acount
+        elif command in COMMANDS["change_account"]:
+            flag = "change_account"
+            while True:
+                change_account = inputz("Save and switch account? (y/n)>  ")
+                if change_account in COMMANDS["yes"]:
+                    player_stats["play_time"] += (datetime.now() - datetime.fromisoformat(player_stats["start_time"])).total_seconds()
+                    data = json_pack(username,x,y)
+                    json_dump(data)
+                    exit_event.set()
+                    printz("Restarting game so you can log in to another account...")
+                    os.execl(sys.executable, sys.executable, os.path.abspath(__file__))
+                elif change_account in COMMANDS["no"]:
+                    printz("Keeping current account.")
                     break
                 else:
                     printz(f"Invalid input. Please enter 'y' or 'n'.")
@@ -3066,8 +3270,6 @@ def Tick_update():
     last = 0
     current = 0
     s = SAFE_GUARD
-    save_key = "save_key_"
-    key_len = 30
     while True:
 
         # check if game wants to exit
@@ -3098,27 +3300,16 @@ def Tick_update():
             s = SAFE_GUARD
 
         if s < 1:
-            for f in range(key_len):
-                save_key += random.choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
-            print(f"Error line() {line()}: Game terminated without reason. Use the following save key to restore your account: {save_key}")
+            print(f"Error line() {line()}: Game terminated without reason. Resetting account.")
 
             data = json_load()
             if username in data:
-                if "admin" in data[username]["attrdict"]["attr"]:
+                player_attrdict = get_player_attrdict(data, username)
+                if "admin" in player_attrdict["attr"]:
                     print("As an admin you have been spared from the punishment of having your acount reset. If you read this message, a problem with the watcher has occurred. Please report this to the creator of the game so it can be fixed. Thank you!")
                     os._exit(0)
-                # save acount if watcher terminates game without reason
-                data[username]["save_key"] = {"key":save_key,"data":data[username].copy()}
                 # reset
-                data[username]["x"] = 0
-                data[username]["y"] = 0
-                data[username]["items"] = base_items
-                data[username]["lastxy"] = "0,0"
-                data[username]["player_stats"]["health"] = 100
-                data[username]["player_stats"]["attack"] = 15
-                data[username]["player_stats"]["strength"] = 15
-                data[username]["player_stats"]["defense"] = 10
-                data[username]["attrdict"]["attr"].append("reset1")
+                reset_player_progress(player_attrdict, "reset1")
             else:
                 print(f"Error line() {line()}: Could not reset account because account does not exist.")
                 os._exit(0)
@@ -3131,20 +3322,22 @@ def Tick_update():
 def Update():
     xy = f"{x},{y}"
     ## XP ##
+    xppart = 0
 
     # time xp
     xp = player_stats["xp"]
     player_stats["play_time"] += (datetime.now() - datetime.fromisoformat(attrdict["divide_time"])).total_seconds()
     attrdict["divide_time"] = datetime.now().isoformat()
-    xp["play_time"] = int(player_stats["play_time"]//10)
+    xp["play_time"] = int(player_stats["play_time"]//3)
 
     # turns xp
-    xp["turns"] = turns
+    xp["turns"] = turns * 2
 
     # total xp
     xp["total"] = 0
     for f in xp:
-        xp["total"] += int(xp[f])
+        xppart += int(xp[f])
+    xp["total"] = xppart
     
     player_stats["xp"] = xp
     
@@ -3308,19 +3501,20 @@ while True:
     if loginorcreate in COMMANDS["yes"]:
         username = inputz("Type your username: ").lower().replace(" ","")
         if username in data:
+            player_attrdict = get_player_attrdict(data, username)
             password = inputz("Type your password: ").lower().replace(" ","")
-            if data[username]["password"] != password:
+            if player_attrdict["password"] != password:
                 print("Incorrect password for user",username)
                 continue
-            elif data[username]["password"] == password:
-                if "reset1" in data[username]["attrdict"]["attr"]:
+            elif player_attrdict["password"] == password:
+                if "reset1" in player_attrdict["attr"]:
                     print(" ")
                     printz(f"Not so much welcome back you dirty little cheater! your acount has been reset as a punishment for trying to cheat by terminating the watcher! Did you really think you could get away with it? You should be ashamed of yourself! Dont do it again, i will not allow it!")
-                    del data[username]["attrdict"]["attr"][data[username]["attrdict"]["attr"].index("reset1")]
-                elif "reset2" in data[username]["attrdict"]["attr"]:
+                    del player_attrdict["attr"][player_attrdict["attr"].index("reset1")]
+                elif "reset2" in player_attrdict["attr"]:
                     print(" ")
                     printz(f"You terminated your terminal without using the proper exit command! I am sorry but your acount has been reset because of it. Make sure you dont do it again!")
-                    del data[username]["attrdict"]["attr"][data[username]["attrdict"]["attr"].index("reset2")]
+                    del player_attrdict["attr"][player_attrdict["attr"].index("reset2")]
                 if username == "z":
                     print(" ")
                     printz(f"Welcome back Zackary!")
@@ -3333,7 +3527,7 @@ while True:
                 else:
                     print(" ")
                     printz(f"Welcome back to Zarckary "+str(username))
-                x, y, items, achieved, turns, trespass, player_stats,lastxy,attrdict = json_unpack(username, data)
+                x, y, items, achieved, turns, trespass, player_stats,lastxy,attrdict,wilhelm_pixie_fairy,barnx,barny = json_unpack(username, data)
                 attrdict["divide_time"] = datetime.now().isoformat()                 
                 break
             else:
@@ -3366,7 +3560,7 @@ while True:
             print(" ") 
             player_stats["start_time"] = datetime.now().isoformat()
             attrdict["divide_time"] = datetime.now().isoformat()
-            data[username] = {"password": password, "x": x, "y": y, "items": items, "achieved": achieved,"turns":turns,"trespass":trespass,"player_stats":player_stats,"lastxy":lastxy,"attrdict":attrdict}
+            data = json_pack(username,x,y)
             break
         else:
             printz(f"Username "+username+" already exist!")
