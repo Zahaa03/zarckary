@@ -3541,13 +3541,6 @@ while True:
         if username not in data:
             password = inputz("Type a password: ").lower().replace(" ","")
             attrdict["attr"] = []
-            if username == "z":
-                    attrdict["attr"].append("admin")
-                    print(" ")
-                    printz(f"Welcome back, Zackary! As the creator of this game you have admin privileges. Type 'a' to access admin commands.")
-                    print(" ")
-            elif username == "ois":
-                    attrdict["attr"].append("a")
             print(" ")
             printz(f"IMPORTANT - turning off terminal without using the proper exit command will delete your acount!")
             print(" ")
